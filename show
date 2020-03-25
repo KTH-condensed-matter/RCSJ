@@ -1,0 +1,15 @@
+#!/bin/bash
+
+ana=./analyze
+
+for i in $*; do
+echo $i
+
+cd $1
+
+cat data | $ana
+# xmgr -xydy J
+
+shift
+cd -
+done

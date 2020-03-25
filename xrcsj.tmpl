@@ -1,0 +1,34 @@
+#!/bin/csh
+# $Id$
+
+##$ -t 1-8
+#$ -j y
+
+mkdir -p v$SGE_TASK_ID
+cd v$SGE_TASK_ID
+
+echo "Starting on `hostname` at `date`" >> log
+
+../../rcsj >> & log <<EOF
+#X
+
+# Parameters:
+: C = %RC%
+: C0 = 0.01
+: R = 1
+: Rterm = 0.1
+: T = %T%
+
+# Run simulation
+
+#	Lx	number	sweeps	equil	Umin	Ustep	Umax
+
+#u      201    10000000	   100  100	0	0.01	5
+u      201    10000000	   100  100	0	0.01	1
+u      201    10000000	   100  100	1	0.05	2
+u      201    10000000	   100  100	2	0.1	5
+
+Quit
+EOF
+
+echo "Stopping on `hostname` at `date`" >> log

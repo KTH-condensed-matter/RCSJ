@@ -1,0 +1,52 @@
+#!/bin/bash
+# $Id$
+
+echo "Starting on `hostname` at `date`" >> log
+
+./rcsj >> log 2>&1 <<EOF
+X # Visualization
+
+# Parameters: (Sample 29)
+# Normally you should rescale all parameters..., e.g., use units where Ic=1 and R=1.
+#: Ic = 1
+: C = 1.3  ### Q factor
+: C0 = 0.009
+: R = 1
+: Rterm = 0.1
+: Cterm = 0 # 0 means Cterm=C0.
+: T = 0.0033
+: Vgap = 1  # Gap voltage. Put equal 0 if you want ohmic behavior.
+: circuit_layout = ordinary # or comb or weak_link
+: init_voltages = false
+#: dt = 0.02 # Time step. Default is 0.02.
+
+# To specify Ic individually use
+# : Ic_array = filename
+# where filename contains a list of length Lx-1 of the critical currents.
+
+# To specify the capacitances individually use (Note: you need to specify both!)
+# : circuit_layout = all_different
+# : C0_array = filename		# contains Lx capacitors to ground
+# : C_array = another_filename	# contains Lx-1 junction capacitances
+
+# To specify an AC drive use, for example,
+# : Vac = 0.1
+# : omega = 0.001 # or if you prefer frequency
+# : f = 0.001
+
+
+# Run simulation
+
+#	Lx	number	sweeps	equil	Umin	Ustep	Umax
+
+u     2889     1000000	100    100000	0	0.01	2
+u     2889     1000000	100    100000	2	0.1	10
+u     2889     1000000	100    100000	10	0.5	50
+u     2889     1000000	100    100000	50	1	200
+u     2889     1000000	100    100000	200	5	1000
+u     2889     1000000	100    100000	1000	20	4000
+
+Quit
+EOF
+
+echo "Stopping on `hostname` at `date`" >> log

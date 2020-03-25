@@ -1,0 +1,79 @@
+#!/bin/bash
+# $Id$
+
+#This program creates all the files created by xrcsj plus the Vx files.
+#Number of Vx files will be number/sweeps for each voltage value
+#number represents total number of instants at each voltage and sweep represents time interval between between voltage measurements.
+#Thre will be number/sweeps lines.
+# Running the program 
+#./xrcsj-v
+#That will created binary files and in order to get text,one has to run
+#./find-phase-slips 100 < Vx_0.5000 > V_out (100 is the number of junctions+1)
+# One can use script to do all this in a loop
+#in the txt file 99 couloms represents the voltage difference between junctions
+# If you for some reason want to rerun the simulation you should first remove
+# the Vx_* files.
+
+
+
+echo "Starting on `hostname` at `date`" >> log
+
+./rcsj_xwindowsaved >> log 2>&1 <<EOF
+X # Visualization
+
+# Parameters: (Sample 29)
+# Normally you should rescale all parameters..., e.g., use units where Ic=1 and R=1.
+#: C = 2.000  ### Q factor
+#: C0 = 0.009
+: R = 1
+: Rterm = 0.1042
+#: Cterm = 0 # 0 means Cterm=C0.
+: T = 0.0001
+: Vgap = 1  # Gap voltage. Put equal 0 if you want ohmic behavior.
+: circuit_layout = all_different
+#: circuit_layout = comb # ordinary # or comb or weak_link
+#: circuit_layout = weak_link
+: init_voltages = false
+#: dt = 0.02 # Time step. Default is 0.02.
+
+
+# To specify Ic individually use
+: L = 10  # length +1 must be specified
+: Ic_array = Icarray # where filename contains a list of length Lx-1 of the critical currents.
+#: Ic_array = random 0.1 Ic
+
+
+# To specify the capacitances individually use (Note: you need to specify both!)
+ : C0_array = C0array   # contains Lx capacitors to ground #first and the last capacitors are terminal capacitors
+ : C_array = Carray	# contains Lx-1 junction capacitances
+
+# To specify an AC drive use, for example,
+ : Vac = 0.1
+# : omega = 0.005 # or if you prefer frequency
+ : f = 0.05 # 0.05 is equal to 8 Ghz (in units of 160 GHz)
+
+
+
+
+# Run simulation
+
+#	Lx	number	sweeps	equil	Umin	Ustep	Umax
+
+u       10     1000000	10    100000	0	0.01	1.51
+
+
+Quit
+EOF
+
+echo "Stopping on `hostname` at `date`" >> log
+#rerun
+#kralini tanimaz diyorki:~~> rm Vx_*
+#kralini tanimaz diyorki:~~> rm Vout_*
+#kralini tanimaz diyorki:~~> ./xrcsj-v
+#kralini tanimaz diyorki:~~> ./find-phase-slips 100 < Vx_0.5000 > Vout_0.5000
+#kralini tanimaz diyorki:~~> ./find-phase-slips 100 < Vx_1.0000 > Vout_1.0000
+#kralini tanimaz diyorki:~~> ./find-phase-slips 100 < Vx_1.5000 > Vout_1.5000
+#kralini tanimaz diyorki:~~> ./find-phase-slips 100 < Vx_0.0000 > Vout_0.0000
+#kralini tanimaz diyorki:~~> xmgrace &
+#or
+#kralini tanimaz diyorki:~~> matlab &
