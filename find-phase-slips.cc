@@ -18,8 +18,10 @@ int main(int argc, char *argv[]) {
     if (argc > 2)
       skip = atoi(argv[2]);
   }
-  else
+  else {
+    cerr << "Usage: " << argv[0] << " Lx [skip] < Vx_...\n"
     exit(-1);
+  }
 
   istream& in = cin;
 
