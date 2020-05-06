@@ -348,8 +348,8 @@ public:
     for (int iii = 0; iii < ant; iii++) {
 
       if (photonArrivalFreq > 0 &&
-	  photonArriavaltime + 1.0/photonArrivalFreq < time*step)
-	photonArriavaltime = time*step + 1.0/photonArrivalFreq;
+          photonArriavaltime + 1.0/photonArrivalFreq < time*step)
+        photonArriavaltime = time*step + 1.0/photonArrivalFreq;
 
       // Voltage bias: Delta is twisted with time!
 
@@ -358,134 +358,147 @@ public:
       double Ut = U + Vac*sin(omega*time*step); // Applied voltage, possibly time dependent.
 
       Is(0) = (Ut - V[0])/Rterm + sqrt(2*T/Rterm/step)*rnd.normal(); // Current through left lead.
+  
       for (int x = 0; x < Lx-1; x++) { // Step through the Lx-1 junctions.
-	double IR = 0, In = 0;
-	if (abs(V(x) - V(x+1)) >= Vgap) {
-	  IR = (V(x) - V(x+1))/R; // Current through resistor shunt.
-	  In = sqrt(2*T/R/step)*rnd.normal();
-	}
-	Is(x+1) = Ic_array(x)*sin( theta(x) - theta(x+1) ) + IR + In;
+	
+        double IR = 0, In = 0;
+	      if (abs(V(x) - V(x+1)) >= Vgap) {
+	        IR = (V(x) - V(x+1))/R; // Current through resistor shunt.
+	        In = sqrt(2*T/R/step)*rnd.normal();
+	      }
+      	Is(x+1) = Ic_array(x)*sin( theta(x) - theta(x+1) ) + IR + In;
 
 
-	if (x == Normaljunctionnumber) {
-	  double vgap = Vgap;
-	  if (photonArriavaltime < time*step && time*step < photonArriavaltime + gapSupressionTime) {
-	    double delta = time*step - photonArriavaltime;
-	    vgap *= (1 - delta / gapSupressionTime);
-	  } else if (photonArriavaltime + gapSupressionTime <= time*step &&
-		     time*step < photonArriavaltime + gapSupressionTime + gapRecoveryTime*10) {
-	    double delta = time*step - photonArriavaltime - gapSupressionTime;
-	    vgap *= (1 - exp(-delta / gapRecoveryTime));
-    }
-    double IR = 0, In = 0;
-	  if (abs(V(x) - V(x+1)) >= vgap) {
-	    IR = (V(x) - V(x+1))/R; // Current through resistor shunt.
-	    In = sqrt(2*T/R/step)*rnd.normal();
-	  }
-    Is(x+1) = Ic_array(x)*(vgap/Vgap)*sin( theta(x) - theta(x+1) ) + IR + In;
-  }
+        if (x == Normaljunctionnumber) {
+          double vgap = Vgap;
+          if (photonArriavaltime < time*step && time*step < photonArriavaltime + gapSupressionTime) {
+            double delta = time*step - photonArriavaltime;
+            vgap *= (1 - delta / gapSupressionTime);
+          } else if (photonArriavaltime + gapSupressionTime <= time*step &&
+              time*step < photonArriavaltime + gapSupressionTime + gapRecoveryTime*10) {
+            double delta = time*step - photonArriavaltime - gapSupressionTime;
+            vgap *= (1 - exp(-delta / gapRecoveryTime));
+          }
+          double IR = 0, In = 0;
+          if (abs(V(x) - V(x+1)) >= vgap) {
+            IR = (V(x) - V(x+1))/R; // Current through resistor shunt.
+            In = sqrt(2*T/R/step)*rnd.normal();
+          }
+          Is(x+1) = Ic_array(x)*(vgap/Vgap)*sin( theta(x) - theta(x+1) ) + IR + In;
+        }
+
       }
+
       Is(Lx) = V(Lx-1)/Rterm + sqrt(2*T/Rterm/step)*rnd.normal(); // Current through right lead.
 
       // Define the equation system:
       {
-	double Cm = 5*C;
-	const double dt = step;
+        double Cm = 5 * C;
+        const double dt = step;
 
-	int N = Lx;
-	double L[N-1], D[N], U[N-1]; // Allocate the matrix tridiag(L,D,U) on the stack!
+        int N = Lx;
+        double L[N - 1], D[N], U[N - 1]; // Allocate the matrix tridiag(L,D,U) on the stack!
 
-	// Fill in the capacitance and conductance matrices.
-	for (int x = 0; x < N; x++) {
+        // Fill in the capacitance and conductance matrices.
+        for (int x = 0; x < N; x++) {
 
-	  if (circuit_layout == comb && Cm > 0 && x % 10 == 5)
-	    // x % 10 == 5 means starting from junction number 5 with periodicity of 289  XXXXXXXXXXXXXXXXXXXXXXXXXXX
-	    D[x] = Cm;		// Capacitor comb every tenth.
-	  else if (circuit_layout == all_different)
-	    D[x] = C0_array[x];	// Specify all capacitors individually.
-	  else
-	    D[x] = C0;		// ordinary circuit.
+          if (circuit_layout == comb && Cm > 0 && x % 10 == 5)
+            // x % 10 == 5 means starting from junction number 5 with periodicity of 289  XXXXXXXXXXXXXXXXXXXXXXXXXXX
+            D[x] = Cm; // Capacitor comb every tenth.
+          else if (circuit_layout == all_different)
+            D[x] = C0_array[x]; // Specify all capacitors individually.
+          else
+            D[x] = C0; // ordinary circuit.
 
-	  double M = C;  // (Euler)
+          double M = C; // (Euler)
 
-	  if (x+1 < N) { // Right neighbour:
-	    if (circuit_layout == all_different) M = C = C_array[x];
-	    if (abs(V(x) - V(x+1)) >= Vgap) M = C + dt/2/R; // (Symmetric)
-	    D[x] += M;
-	    U[x] = - M;
-	  }
+          if (x + 1 < N) { // Right neighbour:
+            if (circuit_layout == all_different)
+              M = C = C_array[x];
+            if (abs(V(x) - V(x + 1)) >= Vgap)
+              M = C + dt / 2 / R; // (Symmetric)
+            D[x] += M;
+            U[x] = -M;
+          }
 
-	  M = C;	// (Euler)
+          M = C; // (Euler)
 
-	  if (x > 0) { // Left neighbour:
-	    if (circuit_layout == all_different) M = C = C_array[x-1];
-	    if (abs(V(x-1) - V(x)) >= Vgap) M = C + dt/2/R; // (Symmetric)
-	    D[x] += M;
-	    L[x-1] = - M;
-	  }
-	}
-	D[0]   += dt/2/Rterm; // First junction connected via Rterm to voltage source.
-	D[N-1] += dt/2/Rterm; // Last junction terminated by Rterm to ground.
+          if (x > 0) { // Left neighbour:
+            if (circuit_layout == all_different)
+              M = C = C_array[x - 1];
+            if (abs(V(x - 1) - V(x)) >= Vgap)
+              M = C + dt / 2 / R; // (Symmetric)
+            D[x] += M;
+            L[x - 1] = -M;
+          }
+        }
+        D[0] += dt / 2 / Rterm;     // First junction connected via Rterm to voltage source.
+        D[N - 1] += dt / 2 / Rterm; // Last junction terminated by Rterm to ground.
 
-	// Terminal capacitance:
-	if (Cterm > 0) { D[0] += Cterm - C0; D[N-1] += Cterm - C0; }
+        // Terminal capacitance:
+        if (Cterm > 0)
+        {
+          D[0] += Cterm - C0;
+          D[N - 1] += Cterm - C0;
+        }
 
-	// Middle capacitor if nonzero:
-	if (circuit_layout == midcap && Cm > 0) D[N/2] += Cm - C0; // Replace C0 by Cm.
+        // Middle capacitor if nonzero:
+        if (circuit_layout == midcap && Cm > 0)
+          D[N / 2] += Cm - C0; // Replace C0 by Cm.
 
-	// Calculate phase update:
-	for (int x = 0; x < Lx; x++) {
-	  // The right hand side of the equation system = div (Is + Ir + In)
-	  new_theta(x) = Is(x+1) - Is(x); // = div I
-	}
-	// new_theta(Lx-2) -= (RC + step/2)*dU; Yes, but dU = dU/dt *dt = 0 for constant applied voltage.
+        // Calculate phase update:
+        for (int x = 0; x < Lx; x++) {
+          // The right hand side of the equation system = div (Is + Ir + In)
+          new_theta(x) = Is(x + 1) - Is(x); // = div I
+        }
+        // new_theta(Lx-2) -= (RC + step/2)*dU; Yes, but dU = dU/dt *dt = 0 for constant applied voltage.
 
-	// Solve the equation system using tridiagonal LU solver:
-	tri_solve(L,D,U,N,&new_theta[0]);
-	// new_theta now contains the solution.
+        // Solve the equation system using tridiagonal LU solver:
+        tri_solve(L, D, U, N, &new_theta[0]);
+        // new_theta now contains the solution.
       }
 
 #ifdef FIND_PHASE_SLIPS
       // Leap-frog: This version tries to identify phase slips. But only in bulk.
       for (int i = 0; i < 1; i++) {
-	V[i] += - new_theta[i]*step;
-	new_theta[i] = theta[i] + V[i]*step;
+        V[i] += -new_theta[i] * step;
+        new_theta[i] = theta[i] + V[i] * step;
       }
       for (int i = 1; i < Lx; i++) {
-	V[i] += - new_theta[i]*step;
-	new_theta[i] = theta[i] + V[i]*step;
-	double dtheta = theta[i]-theta[i-1];
-	int n = lrint(dtheta/twopi);
-	dtheta = new_theta[i]-new_theta[i-1];
-	if (n != lrint(dtheta/twopi))
-	  phout << time _ i << endl;
+        V[i] += -new_theta[i] * step;
+        new_theta[i] = theta[i] + V[i] * step;
+        double dtheta = theta[i] - theta[i - 1];
+        int n = lrint(dtheta / twopi);
+        dtheta = new_theta[i] - new_theta[i - 1];
+        if (n != lrint(dtheta / twopi))
+          phout << time _ i << endl;
       }
       for (int i = Lx; i < Lx; i++) {
-	V[i] += - new_theta[i]*step;
-	new_theta[i] = theta[i] + V[i]*step;
+        V[i] += -new_theta[i] * step;
+        new_theta[i] = theta[i] + V[i] * step;
       }
 #else
       // Leap-frog:
       for (int i = 0; i < Lx; i++) {
-	V[i] += - new_theta[i]*step;
-	new_theta[i] = theta[i] + V[i]*step;
+        V[i] += -new_theta[i] * step;
+        new_theta[i] = theta[i] + V[i] * step;
       }
 #endif
       // The current going into the array from the left, i.e., at the
       // point where the voltage is applied:
-      J += (U - V[0])/Rterm*step; // No need to include the noise since it averages to zero.
+      J += (U - V[0]) / Rterm * step; // No need to include the noise since it averages to zero.
 
 #if 0
       // Alternatively: average over the array.
-      J += Is(0)*step;
+      J += Is(0) * step;
       for (int x = 1; x < Lx; x++) { // Step through the Lx-1 junctions.
-	// Correct resistive current:
-	Is(x) += ( (newtheta(x-1) - 2*theta(x-1) - old_theta(x-1)) -
-		   (newtheta(x) - 2*theta(x) - old_theta(x)) )/(2*R*step);
-	// Add capacitative current:
-	Is(x) += C*( (newtheta(x-1) - 2*theta(x-1) - old_theta(x-1)) -
-		     (newtheta(x) - 2*theta(x) - old_theta(x)) )/sqr(step);
-	J += Is(x)*step;
+        // Correct resistive current:
+        Is(x) += ((newtheta(x - 1) - 2 * theta(x - 1) - old_theta(x - 1)) -
+                  (newtheta(x) - 2 * theta(x) - old_theta(x))) /
+                 (2 * R * step);
+        // Add capacitative current:
+        Is(x) += C * ((newtheta(x - 1) - 2 * theta(x - 1) - old_theta(x - 1)) - (newtheta(x) - 2 * theta(x) - old_theta(x))) / sqr(step);
+        J += Is(x) * step;
       }
 #endif
 
