@@ -205,7 +205,7 @@ int main(int argc, char *argv[]) {
        << "Number of lines: " << n << endl
        << "Number of bytes: " << n*sizeof(Data) << endl;
 
-  stable_sort(d.v,d.v+n);
+  // stable_sort(d.v,d.v+n);
 
   Averages O;
 
