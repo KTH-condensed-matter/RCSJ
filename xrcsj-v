@@ -18,7 +18,7 @@
 
 echo "Starting on `hostname` at `date`" >> log
 
-./rcsj_xwindowsaved >> log 2>&1 <<EOF
+./rcsj_voltages >> log 2>&1 <<EOF
 X # Visualization
 
 # Parameters: (Sample 29)

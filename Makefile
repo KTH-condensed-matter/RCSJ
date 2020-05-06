@@ -20,7 +20,7 @@ all:	$(PROGRAMS)
 rcsj:	rcsj.cc graph.o
 	$(LINK.cc) -DPBC rcsj.cc graph.o -o $@ $(LDLIBS)
 
-rcsj_xwindowsaved:	rcsj.cc graph.o
+rcsj_voltages:	rcsj.cc graph.o
 	$(LINK.cc) -DPRINT_VOLTAGE rcsj.cc graph.o -o $@ $(LDLIBS)
 
 # analyze needs to be compiled without optimization flags...
