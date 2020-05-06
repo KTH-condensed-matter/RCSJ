@@ -372,18 +372,18 @@ public:
 	  if (photonArriavaltime < time*step && time*step < photonArriavaltime + gapSupressionTime) {
 	    double delta = time*step - photonArriavaltime;
 	    vgap *= (1 - delta / gapSupressionTime);
-	  } else if (photonArriavaltime + gapSupressionTime < time*step &&
+	  } else if (photonArriavaltime + gapSupressionTime <= time*step &&
 		     time*step < photonArriavaltime + gapSupressionTime + gapRecoveryTime*10) {
 	    double delta = time*step - photonArriavaltime - gapSupressionTime;
-	    vgap *= (1 - exp(delta / gapRecoveryTime));
-	    double IR = 0, In = 0;
-	    if (abs(V(x) - V(x+1)) >= Vgap) {
-	      IR = (V(x) - V(x+1))/R; // Current through resistor shunt.
-	      In = sqrt(2*T/R/step)*rnd.normal();
-	    }
-	    Is(x+1) = Ic_array(x)*(vgap/Vgap)*sin( theta(x) - theta(x+1) ) + IR + In;
+	    vgap *= (1 - exp(-delta / gapRecoveryTime));
+    }
+    double IR = 0, In = 0;
+	  if (abs(V(x) - V(x+1)) >= vgap) {
+	    IR = (V(x) - V(x+1))/R; // Current through resistor shunt.
+	    In = sqrt(2*T/R/step)*rnd.normal();
 	  }
-	}
+    Is(x+1) = Ic_array(x)*(vgap/Vgap)*sin( theta(x) - theta(x+1) ) + IR + In;
+  }
       }
       Is(Lx) = V(Lx-1)/Rterm + sqrt(2*T/Rterm/step)*rnd.normal(); // Current through right lead.
 
