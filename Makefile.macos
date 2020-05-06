@@ -3,7 +3,7 @@
 #################
 
 PROJECT  = JJarray
-PROGRAMS = rcsj analyze rcsj_xwindowsaved find-phase-slips
+PROGRAMS = rcsj analyze rcsj_voltages find-phase-slips
 
 DEST	= ../run
 

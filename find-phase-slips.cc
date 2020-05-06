@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
       skip = atoi(argv[2]);
   }
   else {
-    cerr << "Usage: " << argv[0] << " Lx [skip] < Vx_...\n"
+    cerr << "Usage: " << argv[0] << " Lx [skip] < Vx_...\n";
     exit(-1);
   }
 
