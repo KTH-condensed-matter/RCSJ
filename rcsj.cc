@@ -748,7 +748,8 @@ void System :: run_U_sweep(istream& cmd) {
     phout.open(c_to_str("PS_%6.4f",U_start));
 // CHANGE FILE NAME "PS_%8.3f",U_start
 #endif
-    ramp_voltage_slowly(abs(U_step)*1000, U_start);
+    // ramp_voltage_slowly(abs(U_step)*1000, U_start);
+    ramp_voltage_slowly(equ*step, U_start);
     equil(equ);
     run(number,sweeps);
     write_data();
