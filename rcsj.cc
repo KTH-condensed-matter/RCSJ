@@ -176,6 +176,8 @@ public:
 
   ofstream phout;		// Data file containing phase slip events (t, x).
 
+  ofstream vout{"V"}; // Voltage at beginning of array V[0].
+
   System() {}
   virtual ~System() {}
 
@@ -488,6 +490,7 @@ public:
       // point where the voltage is applied:
       J += (U - V[0]) / Rterm * step; // No need to include the noise since it averages to zero.
 
+      vout.Bwrite(V.v,1);
 #if 0
       // Alternatively: average over the array.
       J += Is(0) * step;

@@ -51,7 +51,7 @@ INSTALL=install
 
 IPATH   = -I/opt/X11/include 
 LDLIBS  = -L/opt/X11/lib -lX11
-COMPFLAGS = -Ofast -ffast-math -funroll-loops -funit-at-a-time -pipe -march=native -m64
+COMPFLAGS = -std=c++17 -Ofast -ffast-math -funroll-loops -funit-at-a-time -pipe -march=native -m64
 CCFLAGS = $(COMPFLAGS) $(IPATH)
 FFLAGS  = $(COMPFLAGS)
 CFLAGS  = $(COMPFLAGS)
