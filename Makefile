@@ -3,19 +3,20 @@
 #################
 
 PROJECT  = JJarray
-PROGRAMS = rcsj analyze rcsj_voltages find-phase-slips
+TARGETS	 = rcsj analyze rcsj_voltages find-phase-slips plot-v
+PROGRAMS = $(TARGETS) xiv
 
 DEST	= ../run
 
 HDRS	= mt19937.h util.h graph.h Estimate.h TriSolve.h Table.h Average.h
-SRCS	= rcsj.cc graph.cc icon.cc analyze.cc find-phase-slips.cc
-OTHER	= Makefile xrcsj show xrcsj-v xrcsj.tmpl go xrcsj-v-photons
+SRCS	= rcsj.cc graph.cc icon.cc analyze.cc find-phase-slips.cc plot-v.cc
+OTHER	= Makefile xrcsj show xrcsj-v xrcsj.tmpl go xrcsj-v-photons xiv
 
 #################
 # Targets
 #################
 
-all:	$(PROGRAMS)
+all:	$(TARGETS)
 
 rcsj:	rcsj.cc graph.o
 	$(LINK.cc) -DPBC rcsj.cc graph.o -o $@ $(LDLIBS)
@@ -66,7 +67,7 @@ CC	= gcc
 
 clean:;		@rm -f *.o core
 
-clobber:;	@rm -f *.o core tags TAGS $(PROGRAMS)
+clobber:;	@rm -f *.o core tags TAGS $(TARGETS)
 
 depend:;	makedepend -- $(CCFLAGS) $(CPPFLAGS) -- $(SRCS)
 
