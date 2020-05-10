@@ -46,7 +46,7 @@ public:
   int Lx;
   Est curr;
   Est resistivity;
-  double res;
+  Est voltage;
   int time;
   double step;
   int sweeps;
@@ -60,7 +60,7 @@ public:
     in.Bread(&Lx,1);
     in.Bread(&curr,1);
     in.Bread(&resistivity,1);
-    in.Bread(&res,1);
+    in.Bread(&voltage,1);
     in.Bread(&time,1);
     in.Bread(&step,1);
     in.Bread(&sweeps,1);
@@ -101,7 +101,7 @@ public:
   int Lx;
   observable curr;
   observable resistivity;
-  observable res;
+  observable voltage;
   int time;
   double step;
   int sweeps;
@@ -111,13 +111,13 @@ public:
   Averages() : 
     curr("J"),
     resistivity("rho"),
-    res("rho2")
+    voltage("IV")
   { reset(); }
 
   void reset() {
     curr.reset();
     resistivity.reset();
-    res.reset();
+    voltage.reset();
 
     n = 0;
     time = 0;
@@ -138,7 +138,7 @@ public:
 
     curr += d.curr;
     resistivity += d.resistivity;
-    res += d.res;
+    voltage += d.voltage;
   }
 
   void write() {	// Not using replicas:
@@ -147,7 +147,7 @@ public:
     // curr	/= Vol*sweeps*step;
     curr	/= sweeps*step;
     resistivity	/= 2*sweeps*step*T/Vol;
-    res		/= 2*sweeps*step*T/Vol;
+    // voltage	is good as it is.
 
     // double xx = T;
     double xx = U;
@@ -157,9 +157,10 @@ public:
 
 #endif
 
+    double I = curr.mean();
     curr.write(xx);
     resistivity.write(xx);
-    res.write(xx);
+    voltage.write(I); // IV
 
     cerr << n << " simulation runs"
 	 << " at T = " << T << ", t = " << time << endl;
@@ -172,7 +173,7 @@ public:
 
     curr.newset(nr,s);
     resistivity.newset(nr,s);
-    res.newset(nr,s);
+    voltage.newset(nr,s);
   }
 };
 

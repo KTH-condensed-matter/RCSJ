@@ -475,7 +475,7 @@ public:
         if (n != lrint(dtheta / twopi))
           phout << time _ i << endl;
       }
-      for (int i = Lx; i < Lx; i++) {
+      for (int i = Lx; i < Lx; i++) { // Never...
         V[i] += -new_theta[i] * step;
         new_theta[i] = theta[i] + V[i] * step;
       }
@@ -621,6 +621,7 @@ public:
   // int time;
   Estimate curr;
   Estimate resistivity;
+  Estimate voltage; // only over the array.
 
   SampData() {}
 
@@ -629,11 +630,13 @@ public:
 
     curr.reset();
     resistivity.reset();
+    voltage.reset();
   }
 
   inline void samp() {
     curr += J;
     resistivity	+= sqr(J);
+    voltage += V[0] - V[Lx-1];
 
     J = 0;
 
@@ -646,6 +649,7 @@ public:
   void results() {
     curr.results();
     resistivity.results();
+    voltage.results();
 
     // Final results are obtaind as
     //     resistivity	/= sweeps*step*Lx*Ly*T;
@@ -657,14 +661,14 @@ public:
       T _ U _ Lx _
       curr _
       resistivity _
-      0 _
+      voltage _
       time _ step _ sweeps << endl << flush;
 
     datafile <<
       T << U << Lx <<
       curr <<
       resistivity <<
-      0.0 <<
+      voltage <<
       time << step << sweeps << flush;
   }
 
