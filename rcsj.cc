@@ -230,6 +230,7 @@ public:
     gapSupressionTime = 0.0;
     gapRecoveryTime = 4.0; // XXX Units?
     photonArrivalFreq = 0;
+    photonArriavaltime = -100000.0;
   }
 
   void set_Ic() {
@@ -376,10 +377,16 @@ public:
           if (photonArriavaltime < time*step && time*step < photonArriavaltime + gapSupressionTime) {
             double delta = time*step - photonArriavaltime;
             vgap *= (1 - delta / gapSupressionTime);
+
+            // Save Voltage at input, and the normal junction to file:
+            save_voltage_vs_time(x);
           } else if (photonArriavaltime + gapSupressionTime <= time*step &&
               time*step < photonArriavaltime + gapSupressionTime + gapRecoveryTime*10) {
             double delta = time*step - photonArriavaltime - gapSupressionTime;
             vgap *= (1 - exp(-delta / gapRecoveryTime));
+
+            // Save Voltage at input, and the normal junction to file:
+            save_voltage_vs_time(x);
           }
           double IR = 0, In = 0;
           if (abs(V(x) - V(x+1)) >= vgap) {
@@ -490,7 +497,6 @@ public:
       // point where the voltage is applied:
       J += (U - V[0]) / Rterm * step; // No need to include the noise since it averages to zero.
 
-      vout.Bwrite(V.v,1);
 #if 0
       // Alternatively: average over the array.
       J += Is(0) * step;
@@ -551,6 +557,14 @@ public:
       if (please_leave) { please_leave = 0; break; }
     }
     results();
+  }
+
+  void save_voltage_vs_time(int x) {
+    double t = time * step;
+    vout.Bwrite(&t, 1);
+    vout.Bwrite(&V[0], 1);
+    vout.Bwrite(&V[x], 1);
+    vout.Bwrite(&V[x + 1], 1);
   }
 
   virtual void samp() {}
