@@ -139,7 +139,6 @@ public:
   Table<double> V;		// Voltages;
   Table<angle> theta;		// Phases theta_r.
   Table<angle> new_theta;
-  Table<angle> old_theta;
 
   Table<double> Is;		// Supercurrents (temporary)
 
@@ -201,7 +200,6 @@ public:
 #endif
 
     new_theta.init(Lx);
-    old_theta.init(Lx);
     Is.init(Lx+1);		// Currents, including leads.
 
     Ic_array.init(Lx-1);	// Critical currents.
@@ -497,23 +495,8 @@ public:
       // point where the voltage is applied:
       J += (U - V[0]) / Rterm * step; // No need to include the noise since it averages to zero.
 
-#if 0
-      // Alternatively: average over the array.
-      J += Is(0) * step;
-      for (int x = 1; x < Lx; x++) { // Step through the Lx-1 junctions.
-        // Correct resistive current:
-        Is(x) += ((newtheta(x - 1) - 2 * theta(x - 1) - old_theta(x - 1)) -
-                  (newtheta(x) - 2 * theta(x) - old_theta(x))) /
-                 (2 * R * step);
-        // Add capacitative current:
-        Is(x) += C * ((newtheta(x - 1) - 2 * theta(x - 1) - old_theta(x - 1)) - (newtheta(x) - 2 * theta(x) - old_theta(x))) / sqr(step);
-        J += Is(x) * step;
-      }
-#endif
-
       // Do the update:
       swap(theta.v, new_theta.v);
-      swap(old_theta.v, new_theta.v);
 
       time ++;
     }
