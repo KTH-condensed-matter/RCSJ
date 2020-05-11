@@ -360,6 +360,8 @@ public:
 
       Is(0) = (Ut - V[0])/Rterm + sqrt(2*T/Rterm/step)*rnd.normal(); // Current through left lead.
   
+      // Maybe add a shunt to ground here!! ^^^ XXX
+
       for (int x = 0; x < Lx-1; x++) { // Step through the Lx-1 junctions.
 	
         double IR = 0, In = 0;
@@ -369,31 +371,28 @@ public:
 	      }
       	Is(x+1) = Ic_array(x)*sin( theta(x) - theta(x+1) ) + IR + In;
 
+      }
 
-        if (x == Normaljunctionnumber) {
-          double vgap = Vgap;
-          if (photonArriavaltime < time*step && time*step < photonArriavaltime + gapSupressionTime) {
-            double delta = time*step - photonArriavaltime;
-            vgap *= (1 - delta / gapSupressionTime);
-
-            // Save Voltage at input, and the normal junction to file:
-            save_voltage_vs_time(x);
-          } else if (photonArriavaltime + gapSupressionTime <= time*step &&
+      if (photonArrivalFreq > 0 && photonArriavaltime <= time*step) {
+        int x = Normaljunctionnumber;
+        double vgap = Vgap;
+        if (time*step < photonArriavaltime + gapSupressionTime) {
+          double delta = time*step - photonArriavaltime;
+          vgap *= (1 - delta / gapSupressionTime);
+        } else if (photonArriavaltime + gapSupressionTime <= time*step &&
               time*step < photonArriavaltime + gapSupressionTime + gapRecoveryTime*10) {
-            double delta = time*step - photonArriavaltime - gapSupressionTime;
-            vgap *= (1 - exp(-delta / gapRecoveryTime));
-
-            // Save Voltage at input, and the normal junction to file:
-            save_voltage_vs_time(x);
-          }
-          double IR = 0, In = 0;
-          if (abs(V(x) - V(x+1)) >= vgap) {
-            IR = (V(x) - V(x+1))/R; // Current through resistor shunt.
-            In = sqrt(2*T/R/step)*rnd.normal();
-          }
-          Is(x+1) = Ic_array(x)*(vgap/Vgap)*sin( theta(x) - theta(x+1) ) + IR + In;
+          double delta = time*step - photonArriavaltime - gapSupressionTime;
+          vgap *= (1 - exp(-delta / gapRecoveryTime));
         }
+        double IR = 0, In = 0;
+        if (abs(V(x) - V(x+1)) >= vgap) {
+          IR = (V(x) - V(x+1))/R; // Current through resistor shunt.
+          In = sqrt(2*T/R/step)*rnd.normal();
+        }
+        Is(x+1) = Ic_array(x)*(vgap/Vgap)*sin( theta(x) - theta(x+1) ) + IR + In;
 
+        // Save Voltage at input, and the normal junction to file:
+        save_voltage_vs_time(x);
       }
 
       Is(Lx) = V(Lx-1)/Rterm + sqrt(2*T/Rterm/step)*rnd.normal(); // Current through right lead.
