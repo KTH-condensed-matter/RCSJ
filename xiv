@@ -10,11 +10,10 @@ X # Visualization
 : R = 1
 : Rterm = 500
 #: Cterm = 0    # 0 means Cterm=C0.
-: T = 0.00001   # in units of EJ
+: T = 0.0085   # in units of EJ
 : Vgap = 1      # Gap voltage. Put equal 0 if you want ohmic behavior.
 : circuit_layout = ordinary
 : init_voltages = false
-: init_voltages = true
 #: dt = 0.02 # Time step. Default is 0.02.
 : Ic = 1
 
@@ -35,13 +34,18 @@ X # Visualization
 #   Lx      number  sweeps  equil   Umin    Ustep   Umax
 
 u   101     100000  10      10000   0       10      900
-u   101     100000  10      10000   900     10      950
+u   101     100000  10      10000   900      5      950
+u   101     100000  10      10000   950     -5      900
+u   101     100000  10      10000   900      5      950
 u   101     100000  10      10000   950      1      990
 u   101     100000  10      10000   990   0.05      999
 u   101     100000  10      10000   999   0.05     1010
 u   101     100000  10      10000  1010    0.5     1050
 u   101     100000  10      10000  1050      1     1200
 u   101     100000  10      10000  1200     20     1500
+
+!mkdir -p up
+!mv PS_* up
 
 # Reverse sweep:
 
