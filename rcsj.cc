@@ -659,14 +659,14 @@ public:
       curr _
       resistivity _
       voltage _
-      time _ step _ sweeps << endl << flush;
+      time _ step _ sweeps << endl;
 
     datafile <<
       T << U << Lx <<
       curr <<
       resistivity <<
       voltage <<
-      time << step << sweeps << flush;
+      time << step << sweeps;
   }
 
 };
