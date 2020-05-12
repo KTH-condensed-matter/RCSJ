@@ -1,6 +1,7 @@
 #!/bin/bash
 
-ana=./analyze
+PATH=.:$PATH
+ana=analyze
 
 for i in $*; do
 echo $i

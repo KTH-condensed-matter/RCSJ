@@ -4,7 +4,7 @@
 
 PROJECT  = JJarray
 TARGETS	 = rcsj analyze rcsj_voltages find-phase-slips plot-v
-PROGRAMS = $(TARGETS) xiv
+PROGRAMS = $(TARGETS) show xiv xxiv slurm
 
 DEST	= ../run
 

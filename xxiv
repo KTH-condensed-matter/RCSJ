@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# For submission via slurm.
+
+mkdir -p $SLURM_LOCALID
+cd $SLURM_LOCALID
+
+echo "Starting on `hostname` at `date`" >> log
+
+../rcsj >> log 2>&1 <<EOF
+# X # Visualization
+
+: C = 2       # Q^2 factor = beta in dimenstionless units.
+: C0 = 0.02     # Q^2 / lambda^2.
+: R = 1
+: Rterm = 500
+#: Cterm = 0    # 0 means Cterm=C0.
+: T = 0.00001   # in units of EJ
+: Vgap = 1      # Gap voltage. Put equal 0 if you want ohmic behavior.
+: circuit_layout = ordinary
+: init_voltages = false
+: init_voltages = true
+#: dt = 0.02 # Time step. Default is 0.02.
+: Ic = 1
+
+# To specify an AC drive use, for example,
+# : Vac = 0.1
+# : omega = 0.005 # or if you prefer frequency
+# : f = 0.05 # 0.05 is equal to 8 Ghz (in units of 160 GHz)
+
+# Photon:  junction 0.04 0.6 10  (dimensionless time unit = ca 20 ps)
+# : photon = 25 1 4 0.001
+# : photon = 25 0.05 0.5 0.001 # approximately 1 ps, 10 ps, 20 ns.
+
+# Run simulation
+
+# Note bias current approximately Ib = U/R = U / 1000 in the superconducting state.
+# Total sum gap voltage is Lx * Vg = 100 * 1 = 100
+
+#   Lx      number  sweeps  equil   Umin    Ustep   Umax
+
+u   101     100000  10      10000   0       10      900
+u   101     100000  10      10000   900     10      950
+u   101     100000  10      10000   950      1      990
+u   101     100000  10      10000   990   0.05      999
+u   101     100000  10      10000   999   0.05     1010
+u   101     100000  10      10000  1010    0.5     1050
+u   101     100000  10      10000  1050      1     1200
+u   101     100000  10      10000  1200     20     1500
+
+# Reverse sweep:
+
+u   101     100000  10      10000  1500    -20     1200
+u   101     100000  10      10000  1200     -1      999
+u   101     100000  10      10000   999     -1      990
+u   101     100000  10      10000   990    -10      900
+u   101     100000  10      10000   900    -10      0
+
+Q
+
+# u 100    100000	10      10000  0     0.1    50
+u   100    100000	10      10000  0     5    50
+u   100    100000	10      10000  50    -0.2    30
+u   100    100000	10      10000  30    0.2    80
+u   100    100000	10      10000  80    -0.2    30
+
+Quit
+EOF
+
+echo "Stopping on `hostname` at `date`" >> log
+
+
