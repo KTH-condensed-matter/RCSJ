@@ -11,6 +11,10 @@
 #define FIND_PHASE_SLIPS
 // #define PRINT_VOLTAGE
 
+// Put a resistor Rterm also at the end of the array.
+// Otherwise it is connected directly to ground and V(Lx-1) = theta(Lx-1) = 0.
+// #define END_RESISTOR
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -147,11 +151,12 @@ public:
   Table<double> C_array;	// Capacitance of junctions array of length Lx-1.
 
   double T;			// Temperature.
-  double J;			// Electric current (measured).
+  double J, Jtot, Jshunt;			// Electric currents (measured).
   double Ic, Icweak;		// Critical current of tunnel junctions.
   double U;			// Applied voltage.
   double C, C0, Cterm;		// Junction capacitance, and capacitance to ground.
   double R, Rterm;		// Junction resistance and terminal resistance.
+  double Rshunt;      // Shunt resistance (for now between first and last SC island).
   double Vgap;			// Gap voltage (or 0).
   double Vac, omega;		// Applied frequence dependent voltage.
 
@@ -214,7 +219,8 @@ public:
     C = 0.1;
     C0 = C/100;
     R = 1;
-    Rterm = R/100;		// 50 Ohms instead?
+    Rterm = R/100;	// 50 Ohms instead?
+    Rshunt = 0;     // 0 means not present.
     Cterm = 0;			// 0 means same as C0.
     Vgap = 0;
     Ic = 1.0;
@@ -300,6 +306,8 @@ public:
     return !!cmd;
   }
 
+#ifdef END_RESISTOR
+
   void init_voltages() {	// Initialize voltages to a linear profile.
     // const double Ic = 1.0;
     if (U < 2*Rterm*Ic) {
@@ -314,6 +322,26 @@ public:
 	V(x) = U - Itot*Rterm - Iarr*R*x;
     }
   }
+
+#else
+
+  void init_voltages() {	// Initialize voltages to a linear profile.
+    if (U < Rterm*Ic) {
+      for (int x = 0; x < Lx; x++)
+        V(x) = U;
+    }
+    else { // Might need some thinking...
+      double Rarr = (Lx-1) * R;
+      double Rtot = Rterm + Rarr;
+      if (Rshunt > 0)
+        Rtot = Rterm + Rshunt * Rarr /(Rshunt + Rarr);
+      double Iarr = (U-Rterm*Ic)/Rtot;
+      double Itot = Iarr + Ic;
+      for (int x = 0; x < Lx; x++)
+        V(x) = U - Itot*Rterm - Iarr*R*x;
+    }
+  }
+#endif
 
   void setup(double T_, double U_) {
     T = T_;
@@ -335,7 +363,7 @@ public:
   }
 
   virtual void reset() {
-    J = 0;
+    J = Jtot = Jshunt = 0;
     time = 0;
   }
 
@@ -360,7 +388,9 @@ public:
 
       Is(0) = (Ut - V[0])/Rterm + sqrt(2*T/Rterm/step)*rnd.normal(); // Current through left lead.
   
-      // Maybe add a shunt to ground here!! ^^^ XXX
+      // Maybe add a shunt to ground here:
+      if (Rshunt > 0)
+        Is(0) -= (V[0] - 0.0)/Rshunt + sqrt(2*T/Rshunt/step)*rnd.normal(); // Current through left lead.
 
       for (int x = 0; x < Lx-1; x++) { // Step through the Lx-1 junctions.
 	
@@ -395,7 +425,11 @@ public:
         save_voltage_vs_time(x);
       }
 
+#ifdef END_RESISTOR
       Is(Lx) = V(Lx-1)/Rterm + sqrt(2*T/Rterm/step)*rnd.normal(); // Current through right lead.
+#else
+      Is(Lx) = 0.0; // Not used. Lx correspond to the ground. V(Lx-1) = 0 in this case.
+#endif
 
       // Define the equation system:
       {
@@ -439,7 +473,13 @@ public:
           }
         }
         D[0] += dt / 2 / Rterm;     // First junction connected via Rterm to voltage source.
+#ifdef END_RESISTOR
         D[N - 1] += dt / 2 / Rterm; // Last junction terminated by Rterm to ground.
+#endif
+
+        if (Rshunt > 0) {
+          D[0] += dt / 2 / Rshunt;     // First junction connected to ground.
+        }
 
         // Terminal capacitance:
         if (Cterm > 0)
@@ -457,6 +497,11 @@ public:
           // The right hand side of the equation system = div (Is + Ir + In)
           new_theta(x) = Is(x + 1) - Is(x); // = div I
         }
+#ifndef END_RESISTOR
+        new_theta(Lx-1) = 0.0;
+        N --; // Reduce the size of the equation system!!!
+#endif
+
         // new_theta(Lx-2) -= (RC + step/2)*dU; Yes, but dU = dU/dt *dt = 0 for constant applied voltage.
 
         // Solve the equation system using tridiagonal LU solver:
@@ -492,7 +537,10 @@ public:
 #endif
       // The current going into the array from the left, i.e., at the
       // point where the voltage is applied:
-      J += (U - V[0]) / Rterm * step; // No need to include the noise since it averages to zero.
+      Jtot += (U - V[0]) / Rterm * step; // No need to include the noise since it averages to zero.
+      Jshunt += V[0] / Rshunt * step; // No need to include the noise since it averages to zero.
+
+      J += Is(1) * step; // Current through the first junction.
 
       // Do the update:
       swap(theta.v, new_theta.v);
@@ -615,7 +663,7 @@ class SampData : public System
 public:
 
   // int time;
-  Estimate curr;
+  Estimate curr, jtot, jshunt;
   Estimate resistivity;
   Estimate voltage; // only over the array.
 
@@ -625,16 +673,22 @@ public:
     time = 0;
 
     curr.reset();
+    jtot.reset();
+    jshunt.reset();
     resistivity.reset();
     voltage.reset();
   }
 
   inline void samp() {
     curr += J;
+    jtot += Jtot;
+    jshunt += Jshunt;
     resistivity	+= sqr(J);
     voltage += V[0] - V[Lx-1];
 
     J = 0;
+    Jtot = 0;
+    Jshunt = 0;
 
 #ifdef PRINT_VOLTAGE
     ofstream out(c_to_str("Vx_%6.4f",U),ios::app);
@@ -644,6 +698,8 @@ public:
 
   void results() {
     curr.results();
+    jtot.results();
+    jshunt.results();
     resistivity.results();
     voltage.results();
 
@@ -656,6 +712,8 @@ public:
     rawfile <<
       T _ U _ Lx _
       curr _
+      jtot _
+      jshunt _
       resistivity _
       voltage _
       time _ step _ sweeps << endl;
@@ -663,6 +721,8 @@ public:
     datafile <<
       T << U << Lx <<
       curr <<
+      jtot <<
+      jshunt <<
       resistivity <<
       voltage <<
       time << step << sweeps;
@@ -697,6 +757,7 @@ bool System :: setparam(istream& in) {
   else if (name == "C0") in >> C0;
   else if (name == "R") in >> R;
   else if (name == "Rterm") in >> Rterm;
+  else if (name == "Rshunt") in >> Rshunt;
   else if (name == "Cterm") in >> Cterm;
   else if (name == "Ic") { in >> Ic; set_Ic(); }
   else if (name == "Icweak") { in >> Icweak; set_Ic(); }

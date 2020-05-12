@@ -8,7 +8,8 @@ X # Visualization
 : C = 2       # Q^2 factor = beta in dimenstionless units.
 : C0 = 0.02     # Q^2 / lambda^2.
 : R = 1
-: Rterm = 500
+: Rterm = 1000
+: Rshunt = 50
 #: Cterm = 0    # 0 means Cterm=C0.
 : T = 0.0085   # in units of EJ
 : Vgap = 1      # Gap voltage. Put equal 0 if you want ohmic behavior.

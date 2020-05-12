@@ -45,6 +45,8 @@ public:
   double T, U;
   int Lx;
   Est curr;
+  Est jtot;
+  Est jshunt;
   Est resistivity;
   Est voltage;
   int time;
@@ -59,6 +61,8 @@ public:
     in.Bread(&U,1);
     in.Bread(&Lx,1);
     in.Bread(&curr,1);
+    in.Bread(&jtot,1);
+    in.Bread(&jshunt,1);
     in.Bread(&resistivity,1);
     in.Bread(&voltage,1);
     in.Bread(&time,1);
@@ -99,7 +103,7 @@ public:
 
   double T, U;
   int Lx;
-  observable curr;
+  observable curr, jtot, jshunt;
   observable resistivity;
   observable voltage;
   int time;
@@ -110,12 +114,16 @@ public:
 
   Averages() : 
     curr("J"),
+    jtot("Jtot"),
+    jshunt("Jshunt"),
     resistivity("rho"),
     voltage("IV")
   { reset(); }
 
   void reset() {
     curr.reset();
+    jtot.reset();
+    jshunt.reset();
     resistivity.reset();
     voltage.reset();
 
@@ -137,6 +145,8 @@ public:
     sweeps = d.sweeps;
 
     curr += d.curr;
+    jtot += d.jtot;
+    jshunt += d.jshunt;
     resistivity += d.resistivity;
     voltage += d.voltage;
   }
@@ -146,6 +156,8 @@ public:
 
     // curr	/= Vol*sweeps*step;
     curr	/= sweeps*step;
+    jtot	/= sweeps*step;
+    jshunt	/= sweeps*step;
     resistivity	/= 2*sweeps*step*T/Vol;
     // voltage	is good as it is.
 
@@ -159,6 +171,8 @@ public:
 
     double I = curr.mean();
     curr.write(xx);
+    jtot.write(xx);
+    jshunt.write(xx);
     resistivity.write(xx);
     voltage.write(I); // IV
 
