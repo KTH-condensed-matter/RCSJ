@@ -159,11 +159,11 @@ public:
   double Vgap;			// Gap voltage (or 0).
   double Vac, omega;		// Applied frequence dependent voltage.
 
-  int Normaljunctionnumber;	// Junction which goes normal when a photon hits.
+  int normalJunctionNumber;	// Junction which goes normal when a photon hits.
   double gapSupressionTime;	// Time scale for gap supression.
   double gapRecoveryTime;	// Time scale for gap recovery.
   double photonArrivalFreq;	// Frequency of photon arrivals.
-  double photonArriavaltime;	// Time of next photon arrival.
+  double photonArriavalTime;	// Time of next photon arrival.
   
   double Energy;		// Current energy (not used).
 
@@ -229,11 +229,11 @@ public:
     omega = 0.0;		// -"-
     // Ic_array = Ic;		// Same critical current by default.
 
-    Normaljunctionnumber = Lx/2;
+    normalJunctionNumber = Lx/2;
     gapSupressionTime = 0.0;
     gapRecoveryTime = 4.0; // XXX Units?
     photonArrivalFreq = 0;
-    photonArriavaltime = -100000.0;
+    photonArriavalTime = -100000.0;
   }
 
   void set_Ic() {
@@ -297,11 +297,11 @@ public:
   }
 
   int read_photon_param(istream& cmd) {
-    cmd >> Normaljunctionnumber
+    cmd >> normalJunctionNumber
 	>> gapSupressionTime
 	>> gapRecoveryTime
 	>> photonArrivalFreq;
-    photonArriavaltime = -100000.0;
+    photonArriavalTime = -100000.0;
     return !!cmd;
   }
 
@@ -376,8 +376,8 @@ public:
     for (int iii = 0; iii < ant; iii++) {
 
       if (photonArrivalFreq > 0 &&
-          photonArriavaltime + 1.0/photonArrivalFreq < time*step)
-        photonArriavaltime = time*step + 1.0/photonArrivalFreq;
+          photonArriavalTime + 0.5/photonArrivalFreq < time*step)
+        photonArriavalTime = time*step + 0.5/photonArrivalFreq;
 
       // Voltage bias: Delta is twisted with time!
 
@@ -403,14 +403,14 @@ public:
       }
 
       double vgap = Vgap;
-      if (photonArrivalFreq > 0 && photonArriavaltime <= time*step) {
-        int x = Normaljunctionnumber;
-        if (time*step < photonArriavaltime + gapSupressionTime) {
-          double delta = time*step - photonArriavaltime;
+      if (photonArrivalFreq > 0 && photonArriavalTime <= time*step) {
+        int x = normalJunctionNumber;
+        if (time*step < photonArriavalTime + gapSupressionTime) {
+          double delta = time*step - photonArriavalTime;
           vgap *= (1 - delta / gapSupressionTime);
-        } else if (photonArriavaltime + gapSupressionTime <= time*step &&
-              time*step < photonArriavaltime + gapSupressionTime + gapRecoveryTime*10) {
-          double delta = time*step - photonArriavaltime - gapSupressionTime;
+        } else if (photonArriavalTime + gapSupressionTime <= time*step &&
+              time*step < photonArriavalTime + gapSupressionTime + gapRecoveryTime*10) {
+          double delta = time*step - photonArriavalTime - gapSupressionTime;
           vgap *= (1 - exp(-delta / gapRecoveryTime));
         }
         double IR = 0, In = 0;
@@ -478,7 +478,7 @@ public:
 
         // Handle photons here also.
         if (photonArrivalFreq > 0 && vgap < Vgap) {
-          int x = Normaljunctionnumber;
+          int x = normalJunctionNumber;
           double dV = abs(V(x) - V(x + 1));
           if (dV >= vgap && dV < Vgap) {
             double M = dt / 2 / R;
