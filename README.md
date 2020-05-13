@@ -1,6 +1,8 @@
 # RCSJ
 Simulation of Resistively and Capacitively Shunted Josephson junction array.
 
+## TODO:
+
 ## Get started:
 
     mkdir snspd
@@ -18,7 +20,3 @@ Simulation of Resistively and Capacitively Shunted Josephson junction array.
 or
 
     sbatch -t 60 -a 1 slurm r xxiv
-
-## TODO:
-
-- Normal juncion not fully consistent as it is now.  vgap is modified not not further down.

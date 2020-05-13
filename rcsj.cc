@@ -6,14 +6,13 @@
 // #define CHECK_OUT_OF_BOUNDS 2
 
 // #define RANDOM_INITIAL_CONDITION
-//  const double Ccomb = 10*C; // Comb capacitor 10 times junction capacitance. It is also possible to define multiple of Co
-// x % 10 == 5 means statring from junction number 5 with periodicity of 10
+
 #define FIND_PHASE_SLIPS
 // #define PRINT_VOLTAGE
 
 // Put a resistor Rterm also at the end of the array.
-// Otherwise it is connected directly to ground and V(Lx-1) = theta(Lx-1) = 0.
 // #define END_RESISTOR
+// Otherwise it is connected directly to ground and V(Lx-1) = theta(Lx-1) = 0.
 
 #include <iostream>
 #include <fstream>
@@ -403,9 +402,9 @@ public:
 
       }
 
+      double vgap = Vgap;
       if (photonArrivalFreq > 0 && photonArriavaltime <= time*step) {
         int x = Normaljunctionnumber;
-        double vgap = Vgap;
         if (time*step < photonArriavaltime + gapSupressionTime) {
           double delta = time*step - photonArriavaltime;
           vgap *= (1 - delta / gapSupressionTime);
@@ -476,6 +475,18 @@ public:
 #ifdef END_RESISTOR
         D[N - 1] += dt / 2 / Rterm; // Last junction terminated by Rterm to ground.
 #endif
+
+        // Handle photons here also.
+        if (photonArrivalFreq > 0 && vgap < Vgap) {
+          int x = Normaljunctionnumber;
+          double dV = abs(V(x) - V(x + 1));
+          if (dV >= vgap && dV < Vgap) {
+            double M = dt / 2 / R;
+            D[x]   += 2*M;
+            U[x]   -= M;
+            L[x-1] -= M;
+          }
+        }
 
         if (Rshunt > 0) {
           D[0] += dt / 2 / Rshunt;     // First junction connected to ground.
