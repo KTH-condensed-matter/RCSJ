@@ -9,7 +9,9 @@ echo $i
 cd $1
 
 cat data | $ana
-# xmgr -xydy J
+
+xmgr -xydy J &
+xmgr -xydy IV &
 
 shift
 cd -
