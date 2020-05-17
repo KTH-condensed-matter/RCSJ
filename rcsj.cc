@@ -795,7 +795,7 @@ void System :: run_T_sweep(istream& cmd) {
   double T_step, T_end;
 
   cmd >> T >> T_step >> T_end >> newln;
-  int nT = rint((T_end-T)/T_step);
+  int nT = 1 + rint((T_end-T)/T_step);
 
   for (int n = 0; n < nT; n++) {
     setup(T, U);
@@ -811,7 +811,7 @@ void System :: run_U_sweep(istream& cmd) {
 
   double U_start, U_step, U_end;
   cmd >> U_start >> U_step >> U_end;
-  int nU = rint((U_end-U_start)/U_step);
+  int nU = 1 + rint((U_end-U_start)/U_step);
 
   setup(T, U);
   for (int n = 0; n < nU; n++) {

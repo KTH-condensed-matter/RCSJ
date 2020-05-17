@@ -27,6 +27,11 @@ wait
     
     ./plot-V < V > VV ; xmgr VV
 
+Or for photon detection:
+
+    nice ./xphoton && ./plot-V < V > VV ; xmgr VV &
+
+
 ## Model:
 
 ### Josephson junction array
@@ -149,7 +154,8 @@ i_R =
 \quad
 \left<i_n(t)i_n(t')\right> = \frac {2 k_B T} {RI_c^2} \frac{R}{L_K}\delta(t'-t') = \frac {2 k_B T} {L_K I_c^2}\delta(t'-t') = \frac {2 k_B T} {E_J} \delta(t'-t').
 $$
-where $E_J = L_K I_c^2 = \hbar I_c/2e$ is the Josephson energy.
+where $E_J = L_K I_c^2 = \hbar I_c/2e = (\Delta/2) (R_Q/ R)$ is the Josephson energy,
+and $R_Q = h/(2e)^2 \approx 6.45 \, k\Omega$ the resistance quantum.
 
 Resistance is measured in units of $R$.
 
