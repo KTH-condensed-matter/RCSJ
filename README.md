@@ -163,8 +163,8 @@ The dimensionless impedance is $Z_0 / R = \sqrt{L_K/R^2 C_0} = \lambda/Q$.
 
 The RC and L/R times are $\tau_{RC} = Q^2$ and $\tau_{L/R} = 1$, respectively.
 
-The velocity of the Mooij-Schön mode is $L_K / R/\sqrt{L_K C_0} = \sqrt{L_K/C_0 R^2} = Q/\lambda = R/Z_0$ junctions / dimensionless time,
-where $\lambda/\xi = \sqrt{C/C_0}$ is the charge screening length (in units of $\xi$).
+The velocity of the Mooij-Schön mode is $L_K / R/\sqrt{L_K C_0} = \sqrt{L_K/C_0 R^2} = \lambda / Q = Z_0 / R$ junctions / dimensionless time,
+where $\lambda  = \sqrt{C/C_0}$ is the charge screening length (in units of $\xi$).
 
 
 In dimensionless units we can therefore set
@@ -183,8 +183,8 @@ Note that $I_c$, $N R$, and $Z_0$ should be easy to determine experimentally.
 
 Then $Q/\lambda = (R/Z_0)$, so we can set the dimensionless `C0` $= (R/Z_0)^2$
 
-The velocity is $c_0 = R / Z_0$ junctions / time unit.
-In dimensionfull units it is $1/\sqrt{L_K'C_0'} = Z_0/L_K \xi= 1/Z_0 C_0 \xi$.
+The velocity is $c_0 = Z_0 / R$ junctions / time unit.
+In dimensionfull units it is $1/\sqrt{L_K'C_0'} = (Z_0/L_K) \xi= \xi/Z_0 C_0$.
 
 Possibly one can read off the sum gap voltage $N V_g = N 2 \Delta/e$ from an IV curve?
 From the litterature we know $\Delta$, and then we may estimate $N$?
