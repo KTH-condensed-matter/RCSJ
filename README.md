@@ -1,9 +1,10 @@
 # RCSJ
+
 Simulation of Resistively and Capacitively Shunted Josephson junction array.
 
-## TODO:
+## TODO
 
-## Get started:
+## Get started
 
     mkdir snspd
     cd snspd
@@ -31,23 +32,21 @@ Or for photon detection:
 
     nice ./xphoton && ./plot-V < V > VV ; xmgr VV &
 
-
-## Model:
+## Model
 
 ### Josephson junction array
 
 ![circuit](./circuit.jpg)
 
-
 Total current through a junction between $x$ and $x+1$
 
 $$
-I_x^\text{tot} = C (V_{x+1} - V_x) + I_c \sin(\theta_{x+1}-\theta_x) + I_R
+I_x^\text{tot} = C (\dot{V}_{x+1} - \dot{V}_x) + I_c \sin(\theta_{x+1}-\theta_x) + I_R
 $$
 where $I_R$ is the quasiparticle tunneling current represented by a nonlinear resistance
 
 $$
-I_R = 
+I_R =
 \begin{cases}
 (V_{x+1} - V_x)/R + I_n, & \text{if} \;|V_{x+1} - V_x| > V_g
 \\
@@ -93,32 +92,33 @@ where $I_\text{shunt} = V_1/R_\text{shunt} + I_{n,\text{shunt}}$.
 
 Right terminal: Direct connection to ground, $V_N = \theta_N = 0$.
 
-## Parameters:
+## Parameters
 
-- Ic   - Critical current
-- R    - Shunt resistance. Nonlinear, only if $V_{x+1} - V_{x} > V_g$.
-- Vgap - Gap voltage $V_g = 2\Delta / e$.
-- C    - Shunt capacitance
-- C0  - Capacitance to ground.
-- Rterm - Series resistance at input
-- Rshunt - Shunt to ground at input
-- Cterm - Capacitance to ground at input
-- dt   - Time step.
+- $I_c$   - Critical current
+- $R$    - Shunt resistance. Nonlinear, only if $V_{x+1} - V_{x} > V_g$.
+- $V_{\text{gap}}$ - Gap voltage $V_g = 2\Delta / e$.
+- $C$    - Shunt capacitance
+- $C_0$  - Capacitance to ground.
+- $R_{\text{term}}$ - Series resistance at input
+- $R_{\text{shunt}}$ - Shunt to ground at input
+- $C_{\text{term}}$ - Capacitance to ground at input
+- $dt$   - Time step.
 
 ### Time scales
 
 In the array:
+
 - $\tau_{RC} = RC$
 - $\tau_{L/R} = L_K/R$
-- $\tau_{LC} = 1/\sqrt{LC} = \sqrt{\tau_{RC} \tau_{L/R}}$
+- $\tau_{LC} = 1/\sqrt{L_K C} = \sqrt{\tau_{RC} \tau_{L/R}}$
 
 where $L_K(I) = \frac \hbar {2e \sqrt{I_c^2 - I_s^2}} \approx \frac \hbar {2e \sqrt{I_c^2 - I_b^2}}$ is the kinetic inductance (per junction).
 We set $L_K = L_K(0) = \frac \hbar {2e I_c}$.
 
 At the input:
+
 - $R_\text{tot} C_\text{term}$, where $R_\text{tot}^{-1} = R_\text{term}^{-1} + R_\text{shunt}^{-1}$.
 - $L_\text{tot} / R_\text{tot}$, where $L_\text{tot} = N L_K + L_\text{ext}$.
-
 
 "Quality factor" $Q^2 = \beta = \tau_{RC}/\tau_{L/R} = RC / (L_K/R) = R^2 C / L_K$.
 
@@ -135,11 +135,10 @@ where $L_K = \hbar / 2e I_c = \Phi_0 / 2\pi I_c$ is the kinetic inductance at ze
 
 The dimensionless voltage becomes $v_x = V_x (L_K/R) (2\pi / {\Phi_0}) = V_x / R I_c =  \dot \theta$, where the dot now indicates the time derivative wrt the rescaled time $t/\tau_{L/R}$.
 
-
 The dimensionless current $i_x = I_x^\text{tot}/I_c$ becomes
 
 $$
-i_x = Q^2 (v_{x+1} - v_x) + \sin(\theta_{x+1}-\theta_x) + i_R,
+i_x = Q^2 (\dot{v}_{x+1} - \dot{v}_x) + \sin(\theta_{x+1}-\theta_x) + i_R,
 \\
 Q^2 = R^2 C/ L
 \\
@@ -166,22 +165,21 @@ The RC and L/R times are $\tau_{RC} = Q^2$ and $\tau_{L/R} = 1$, respectively.
 The velocity of the Mooij-Schön mode is $L_K / R/\sqrt{L_K C_0} = \sqrt{L_K/C_0 R^2} = \lambda / Q = Z_0 / R$ junctions / dimensionless time,
 where $\lambda  = \sqrt{C/C_0}$ is the charge screening length (in units of $\xi$).
 
-
 In dimensionless units we can therefore set
 
-    : Ic = 1
-    : R  = 1
-    : C  = Q^2
-    : C0 = Q^2 / lambda^2
-    : Rterm  = Rterm / R
-    : Rshunt = Rshunt / R
-    : Cterm  = Q^2 * Cterm / C
-    : T = kB T / EJ = kB T / L_K Ic^2
-    : Vgap = v_g = 2\Delta/e R I_c = 4/pi or slightly less, maybe 1.  
+    : $I_c = 1$
+    : $R  = 1$
+    : $C  = Q^2$
+    : $C_0 = Q^2 / \lambda^2$
+    : $R_{\text{term}}  = R_{\text{term}} / R$
+    : $R_{\text{shunt}} = R_{\text{shunt}} / R$
+    : $C_{\text{term}}  = Q^2 C_{\text{term}} / C$
+    : $T = k_{\text{B}} T / E_J = k_{\text{B}} T / L_K Ic^2$
+    : $V_{\text{gap}} = v_g = 2\Delta/e R I_c = 4/\pi$ or slightly less, maybe 1.  
 
-Note that $I_c$, $N R$, and $Z_0$ should be easy to determine experimentally.
+Note that $I_c$, $NR$, and $Z_0$ should be easy to determine experimentally.
 
-Then $Q/\lambda = (R/Z_0)$, so we can set the dimensionless `C0` $= (R/Z_0)^2$
+Then $Q/\lambda = (R/Z_0)$, so we can set the dimensionless $C_0 = (R/Z_0)^2$
 
 The velocity is $c_0 = Z_0 / R$ junctions / time unit.
 In dimensionfull units it is $1/\sqrt{L_K'C_0'} = (Z_0/L_K) \xi= \xi/Z_0 C_0$.
@@ -189,9 +187,7 @@ In dimensionfull units it is $1/\sqrt{L_K'C_0'} = (Z_0/L_K) \xi= \xi/Z_0 C_0$.
 Possibly one can read off the sum gap voltage $N V_g = N 2 \Delta/e$ from an IV curve?
 From the litterature we know $\Delta$, and then we may estimate $N$?
 
-
-
-### Microscopically, for Josephson juncions:
+### Microscopically, for Josephson juncions
 
 Using the Ambegaokar-Baratoff relation $I_c = \frac{\pi \Delta}{2 e R} \tanh \frac \Delta {2k_BT}$.
 
@@ -200,7 +196,6 @@ The gap voltage $V_g = 2\Delta / e \; \Rightarrow \, v_g = 2\Delta / e I_c R = 4
 Kinetic inductance $L_K(i) = \hbar/2eI_c \sqrt{1-i_b^2} = R \hbar / \pi \Delta \sqrt{1-i_b^2}\tanh(\Delta/2k_BT)$
 
 Assuming $T \lesssim 0.4 T_c$, we take $\Delta(T) \approx \Delta_0$ and $\tanh(\Delta/2k_B T) \approx 1$.
-
 
 ## Superconducting nanowires
 
@@ -231,7 +226,6 @@ $n_{qp}(T) = n e^{-\Delta / k_B T} \ll n$, which motivates using a nonlinear shu
 For small currents or eqivallently $|V_{x+1}-V_x| < V_g = 2 \Delta/ e$ we thus ignore their contribution, while for $|V_{x+1}-V_x| > V_g$ we assume that the quasiparticle current is ohmic with resistance $R$.
 
 This suggests that the model should be applicable also for continous wires.
-
 
 ## Microscopic model of nanowire
 
@@ -289,7 +283,6 @@ Charge screening length $\lambda = \sqrt{C' / C_0'} = \sqrt{C / C_0} \xi = \sqrt
 $\lambda / c_0 = \sqrt{L'C'} = \tau_{LC}$
 
 Characteristic impedance $Z_0 = \sqrt{L_K'/C_0'} = \sqrt{\hbar/\pi\sigma s \Delta C_0'}$.
-
 
 Natural to assume a critical current density $J_c = \sigma V_g / \xi = \sigma 2\Delta/e \xi$.
 This then gives a
