@@ -41,14 +41,14 @@ Or for photon detection:
 Total current through a junction between $x$ and $x+1$
 
 $$
-I_x^\text{tot} = C (\dot{V}_{x+1} - \dot{V}_x) + I_c \sin(\theta_{x+1}-\theta_x) + I_R
+I_x^\text{tot} = C (\dot{V}_{x} - \dot{V}_{x+1}) + I_c \sin(\theta_{x}-\theta_{x+1}) + I_R
 $$
 where $I_R$ is the quasiparticle tunneling current represented by a nonlinear resistance
 
 $$
 I_R =
 \begin{cases}
-(V_{x+1} - V_x)/R + I_n, & \text{if} \;|V_{x+1} - V_x| > V_g
+(V_{x} - V_{x+1})/R + I_n, & \text{if} \;|V_{x} - V_{x+1}| > V_g
 \\
 0 , & \text{otherwise}
 \end{cases}
@@ -57,8 +57,6 @@ I_R =
 \quad
 \left<I_n(t)I_n(t')\right> = \frac {2 k_B T} R \delta(t'-t').
 $$
-
-*XXX Should check that a consistent sign convention for I is used! XXX*
 
 Josephson AC effect
 
@@ -69,7 +67,7 @@ $$
 Kirshoffs law
 
 $$
-C_0 \dot V_x = I_{x-1} - I_x
+C_0 \dot V_x = I^\text{tot}_{x-1} - I^\text{tot}_x
 $$
 
 #### Boundary conditions
@@ -95,7 +93,7 @@ Right terminal: Direct connection to ground, $V_N = \theta_N = 0$.
 ## Parameters
 
 - $I_c$   - Critical current
-- $R$    - Shunt resistance. Nonlinear, only if $V_{x+1} - V_{x} > V_g$.
+- $R$    - Shunt resistance. Nonlinear, only if $|V_{x} - V_{x+1}| > V_g$.
 - $V_{\text{gap}}$ - Gap voltage $V_g = 2\Delta / e$.
 - $C$    - Shunt capacitance
 - $C_0$  - Capacitance to ground.
@@ -138,13 +136,13 @@ The dimensionless voltage becomes $v_x = V_x (L_K/R) (2\pi / {\Phi_0}) = V_x / R
 The dimensionless current $i_x = I_x^\text{tot}/I_c$ becomes
 
 $$
-i_x = Q^2 (\dot{v}_{x+1} - \dot{v}_x) + \sin(\theta_{x+1}-\theta_x) + i_R,
+i_x = Q^2 (\dot{v}_{x} - \dot{v}_{x+1}) + \sin(\theta_{x}-\theta_{x+1}) + i_R,
 \\
 Q^2 = R^2 C/ L
 \\
 i_R =
 \begin{cases}
-(v_{x+1} - v_x) + i_n, & \text{if} \;|v_{x+1} - v_x| < v_g = V_g/RI_c
+(v_{x} - v_{x+1}) + i_n, & \text{if} \;|v_{x} - v_{x+1}| < v_g = V_g/RI_c
 \\
 0 , & \text{otherwise}
 \end{cases}
@@ -223,7 +221,7 @@ Up to a numerical factor of order one these relations agree with $J_d = \sigma \
 The shunt resistors in the model describe the dissipation caused by quasiparticles in a two fluid model of superconductivity.
 At low temperatures the density of quasiparticles is strongly suppressed,
 $n_{qp}(T) = n e^{-\Delta / k_B T} \ll n$, which motivates using a nonlinear shunt resistor.
-For small currents or eqivallently $|V_{x+1}-V_x| < V_g = 2 \Delta/ e$ we thus ignore their contribution, while for $|V_{x+1}-V_x| > V_g$ we assume that the quasiparticle current is ohmic with resistance $R$.
+For small currents or eqivallently $|V_{x}-V_{x+1}| < V_g = 2 \Delta/ e$ we thus ignore their contribution, while for $|V_{x}-V_{x+1}| > V_g$ we assume that the quasiparticle current is ohmic with resistance $R$.
 
 This suggests that the model should be applicable also for continous wires.
 
@@ -292,3 +290,9 @@ $$I_c = J_c s = V_g/ R' \xi = V_g / R = 2\Delta / e R .$$
 
 Note that this is consistent with the relation
 $L_K = \hbar / 2e I_c \approx \hbar R/ 4\Delta = \xi \hbar /4 \sigma s \Delta$ up to a factor $\pi /4$.
+
+
+
+## Photon detection events ##
+
+Bla bla bla.
