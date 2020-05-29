@@ -295,4 +295,23 @@ $L_K = \hbar / 2e I_c \approx \hbar R/ 4\Delta = \xi \hbar /4 \sigma s \Delta$ u
 
 ## Photon detection events ##
 
-Bla bla bla.
+When a photon arrives at the nanowire this is modeled as a suppression of the local critical current and the gap voltage of a particular junction $x$,
+
+$$
+\frac{I_c(x,\delta t)}{I_c(x,0)} =
+\frac{V_\text{gap}(x,\delta t)}{V_\text{gap}(x,0)} =
+\begin{cases}
+	1 - \delta t / \tau_\text{supr},
+	& 0 < \delta t \leq \tau_\text{supr}
+\\
+	1 - \exp(-[\delta t - \tau_\text{supr}]/ \tau_\text{recov}),
+	& 0 < \delta t - \tau_\text{supr} \leq 10 \tau_\text{recov}
+\end{cases}
+$$
+
+where $\delta t$ is the time since the photon reached the detector.
+
+In the input file this is set using
+
+    : photon x tau_supr tau_recov photon_frequency.
+
