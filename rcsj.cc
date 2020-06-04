@@ -833,6 +833,8 @@ void System :: run_U_sweep(istream& cmd) {
     phout.close();
     phout.open(c_to_str("PS_%6.4f",U_start));
 // CHANGE FILE NAME "PS_%8.3f",U_start
+    vout.close();
+    vout.open(c_to_str("V_%6.4f",U_start)); // Set file name for voltage output.
 #endif
     // ramp_voltage_slowly(abs(U_step)*1000, U_start);
     ramp_voltage_slowly(equ*step, U_start);
