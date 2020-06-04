@@ -305,6 +305,20 @@ public:
     return !!cmd;
   }
 
+  double set_dt(istream& in) {
+    double dt;
+    string s;
+    in >> s;
+    if (s == "sqrt(LC)*") {
+      in >> dt;
+      double L_k = 1.0/Ic;     // Assumes hbar / 2e = 1...
+      dt *= sqrt(L_k * C);
+    }
+    else
+      dt = stod(s);
+    return dt;
+  }
+
 #ifdef END_RESISTOR
 
   void init_voltages() {	// Initialize voltages to a linear profile.
@@ -763,7 +777,7 @@ bool System :: setparam(istream& in) {
   else if (name == "omega") in >> omega;
   else if (name == "f") { in >> omega; omega *= twopi; }
   else if (name == "T") in >> T;
-  else if (name == "dt") in >> step;
+  else if (name == "dt") step = set_dt(in);
   else if (name == "C") in >> C;
   else if (name == "C0") in >> C0;
   else if (name == "R") in >> R;

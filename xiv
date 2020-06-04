@@ -5,6 +5,7 @@ echo "Starting on `hostname` at `date`" >> log
 ./rcsj >> log 2>&1 <<EOF
 X # Visualization
 
+: Ic = 1
 : C = 2       # Q^2 factor = beta in dimenstionless units.
 : C0 = 0.02     # Q^2 / lambda^2.
 : R = 1
@@ -16,7 +17,7 @@ X # Visualization
 : circuit_layout = ordinary
 : init_voltages = false
 #: dt = 0.02 # Time step. Default is 0.02.
-: Ic = 1
+# : dt = sqrt(LC)* 0.02 # May also be set automatically in this way.
 
 # To specify an AC drive use, for example,
 # : Vac = 0.1
