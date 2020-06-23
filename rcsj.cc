@@ -341,17 +341,20 @@ public:
   void init_voltages() {	// Initialize voltages to a linear profile.
     if (U < Rterm*Ic) {
       for (int x = 0; x < Lx; x++)
-        V(x) = U;
+        V(x) = 0;
     }
     else { // Might need some thinking...
-      double Rarr = (Lx-1) * R;
+      double I = U/(Rterm + Rshunt);      
+      double Ua = I*Rshunt;
+      double n = floor(Ua/R);
+      double Rarr = n*R;
       double Rtot = Rterm + Rarr;
       if (Rshunt > 0)
         Rtot = Rterm + Rshunt * Rarr /(Rshunt + Rarr);
-      double Iarr = (U-Rterm*Ic)/Rtot;
+      double Iarr = (U-Rterm*I)/Rtot;
       double Itot = Iarr + Ic;
       for (int x = 0; x < Lx; x++)
-        V(x) = U - Itot*Rterm - Iarr*R*x;
+        V(x) = U - Itot*Rterm - Iarr*R*x/n;
     }
   }
 #endif
