@@ -8,12 +8,14 @@ The following programs and packages are needed to run this code. Make sure to ha
 
 - `xmgr` - Program for plotting. Note that the new version, xmgrace, is not compatible with this reository. Instructrions for how to install are found [here](INSTALL_XMGR.md).
 
+- implement oscilloscope trigger on voltage with printout using circular buffer.
+
 ## Get started
 
     mkdir snspd
     cd snspd
     git clone https://github.com/jlidmar/RCSJ.git src
-
+    
     cd src
     make
     make install
@@ -169,15 +171,15 @@ where $\lambda  = \sqrt{C/C_0}$ is the charge screening length (in units of $\xi
 
 In dimensionless units we can therefore set
 
-    : $I_c = 1$
-    : $R  = 1$
-    : $C  = Q^2$
-    : $C_0 = Q^2 / \lambda^2$
-    : $R_{\text{term}}  = R_{\text{term}} / R$
-    : $R_{\text{shunt}} = R_{\text{shunt}} / R$
-    : $C_{\text{term}}  = Q^2 C_{\text{term}} / C$
-    : $T = k_{\text{B}} T / E_J = k_{\text{B}} T / L_K Ic^2$
-    : $V_{\text{gap}} = v_g = 2\Delta/e R I_c = 4/\pi$ or slightly less, maybe 1.  
+    : Ic = 1
+    : R  = 1
+    : C  = Q^2
+    : C0 = Q^2 / lambda^2
+    : Rterm = Rterm / R
+    : Rshunt = Rshunt / R
+    : Cterm  = Q^2 Cterm / C
+    : T = k_B T / E_J = k_B T / L_K Ic^2
+    : Vgap = v_g = 2Delta/e R Ic = 4/pi or slightly less, maybe 1.
 
 Note that $I_c$, $NR$, and $Z_0$ should be easy to determine experimentally.
 
@@ -203,7 +205,7 @@ Assuming $T \lesssim 0.4 T_c$, we take $\Delta(T) \approx \Delta_0$ and $\tanh(\
 
 Discretize using a lattice constant $\approx \xi =$ the superconducting coherence length.
 
-Note that in the discrete model the kinetic inductance is $L_K(i) = \hbar / 2e \sqrt{I_c - I_b^2} = L_K(0) / \sqrt{1-i_b^2}$ is larger than $L_K \equiv L_K(0)$, especially close to the critical current.  For a continuous superconducting nanowire we similarly except from GL that the supercurrent density obeys
+Note that in the discrete model the kinetic inductance is $L_K(i) = \hbar / 2e \sqrt{I_c - I_b^2} = L_K(0) / \sqrt{1-i_b^2}$ is larger than $L_K \equiv L_K(0)$, especially close to the critical current.  For a continuous superconducting nanowire we similarly expect from GL that the supercurrent density obeys
 
 $$
 J_s = 2e n_s (1 - (v/v_0)^2) v
@@ -224,10 +226,10 @@ Up to a numerical factor of order one these relations agree with $J_d = \sigma \
 
 The shunt resistors in the model describe the dissipation caused by quasiparticles in a two fluid model of superconductivity.
 At low temperatures the density of quasiparticles is strongly suppressed,
-$n_{qp}(T) = n e^{-\Delta / k_B T} \ll n$, which motivates using a nonlinear shunt resistor.
+$n_{qp}(T) = n e^{-\Delta / k_B T} \ll n$, which motivates using a nonlinear shunt resistor in the model.
 For small currents or eqivallently $|V_{x}-V_{x+1}| < V_g = 2 \Delta/ e$ we thus ignore their contribution, while for $|V_{x}-V_{x+1}| > V_g$ we assume that the quasiparticle current is ohmic with resistance $R$.
 
-This suggests that the model should be applicable also for continous wires.
+This suggests that the model should be applicable also for continous wires. A possible refinement would be to include a subgap resistance.
 
 ## Microscopic model of nanowire
 
