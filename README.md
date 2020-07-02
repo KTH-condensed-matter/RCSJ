@@ -18,7 +18,7 @@ The following programs and packages are needed to run this code. Make sure to ha
     make
     make install
 
-    cd ../run
+    cd run
 
     nice ./xiv &
 
