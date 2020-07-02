@@ -6,7 +6,7 @@ PROJECT  = JJarray
 TARGETS	 = rcsj analyze rcsj_voltages find-phase-slips plot-v
 PROGRAMS = $(TARGETS) show xiv xxiv slurm
 
-DEST	= ../run
+DEST	= run
 
 HDRS	= mt19937.h util.h graph.h Estimate.h TriSolve.h Table.h Average.h
 SRCS	= rcsj.cc graph.cc icon.cc analyze.cc find-phase-slips.cc plot-v.cc

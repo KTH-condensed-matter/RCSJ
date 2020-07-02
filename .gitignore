@@ -35,3 +35,6 @@ rcsj
 analyze
 rcsj_voltages
 plot-v
+
+# Run directory created when running the simulation
+/run
