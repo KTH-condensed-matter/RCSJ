@@ -19,6 +19,7 @@
 #include <sstream>
 #include <cmath>
 #include <algorithm>
+#include <array>
 
 using namespace std;
 
@@ -180,6 +181,11 @@ public:
   ofstream phout;		// Data file containing phase slip events (t, x).
 
   ofstream vout{"V"}; // Voltage at beginning of array V[0].
+
+  double trigger_level = 0;
+  int trigger_index = -1;
+  array<double,8192> Vbuffer;  // Length needs to be a power of 2.
+  int Vbuff_index = 0;
 
   System() {}
   virtual ~System() {}
@@ -570,6 +576,8 @@ public:
 
       J += Is(1) * step; // Current through the first junction.
 
+      trigger_oscilloscope(V[0]);
+
       // Do the update:
       swap(theta.v, new_theta.v);
 
@@ -625,6 +633,23 @@ public:
     vout.Bwrite(&V[x + 1], 1);
   }
 
+  void trigger_oscilloscope(double V) {
+    if (trigger_level > 0) {
+      Vbuffer[Vbuff_index++] = V;
+      const int mask = Vbuffer.size()-1;
+      Vbuff_index &= mask;
+      if (trigger_index < 0 && V > trigger_level)
+        trigger_index = (Vbuff_index -1 + Vbuffer.size() - 512) & mask;
+      else if (trigger_index == Vbuff_index) {
+        static ofstream out("Vtrig");
+        for (int i = 0; i < Vbuffer.size(); i++)
+          out << (i - 512) * step __ Vbuffer[(i + trigger_index) & mask] << endl;
+        out << '&' << endl;
+        trigger_index = -1;
+      }
+    }
+  }
+
   virtual void samp() {}
   virtual void results() {}
   virtual void write_data() {}
@@ -656,6 +681,11 @@ public:
 
     for (int x = 0; x < Lx-1; x++)
       win-> line(x,Lx*3/4.0,x,Lx*3/4 + (V[x]-V[x+1]) * Lx/8, win-> gcred); // potential difference
+
+    static double Vscale = 1000;
+    const int VN = Vbuffer.size(), mask = VN - 1;
+    for (int i = 0; i < VN-1; i++)
+      win-> line(i*1.0*Lx/VN, Vbuffer[(i + Vbuff_index) % mask]*Vscale,(i+1.0)*Lx/VN, Vbuffer[(i + 1 + Vbuff_index) % mask]*Vscale, win-> gcgreen);
 
     if (win->info) {
       char s[200];
@@ -689,6 +719,10 @@ public:
         photonArrivalFreq = 1e-12;  // Needs to be nonzero...
         clog << "=> Photon at x = " << normalJunctionNumber << ", time = " << photonArrivalTime << endl;
       }
+      if (win-> mouse == 4)
+        Vscale *= 1.2;
+      if (win-> mouse == 5)
+        Vscale /= 1.2;
     }
     if (win->please_close) { delete win; win = 0; }
     sigrelse(SIGHUP);
@@ -809,6 +843,7 @@ bool System :: setparam(istream& in) {
   else if (name == "Ic_array") { read_Ic(in); }
   else if (name == "C0_array") { read_C0(in); }
   else if (name == "C_array") { read_C(in); }
+  else if (name == "trigger_level") in >> trigger_level;
   else if (name == "photon") { read_photon_param(in); }
 
   else cerr << "What is " << name << '?' << endl;
