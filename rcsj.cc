@@ -437,6 +437,7 @@ public:
           vgap *= (1 - exp(-delta / gapRecoveryTime));
         }
         double IR = 0, In = 0;
+        // XXX Need to analyze the effect of reducing the gap...
         if (abs(V(x) - V(x+1)) >= vgap) {
           IR = (V(x) - V(x+1))/R; // Current through resistor shunt.
           In = sqrt(2*T/R/step)*rnd.normal();
@@ -660,7 +661,7 @@ public:
 
     double size = 0.5;
 
-    win-> setview(Lx);
+    win-> setview(0,-2,Lx,100);
 
 #if 0
     for (int x = 0; x < Lx; x++) { // Plot the XY spin:
@@ -684,6 +685,7 @@ public:
 
     static double Vscale = 1000;
     const int VN = Vbuffer.size(), mask = VN - 1;
+    win-> line(0.0,0.0,Lx,0);
     for (int i = 0; i < VN-1; i++)
       win-> line(i*1.0*Lx/VN, Vbuffer[(i + Vbuff_index) % mask]*Vscale,(i+1.0)*Lx/VN, Vbuffer[(i + 1 + Vbuff_index) % mask]*Vscale, win-> gcgreen);
 
@@ -710,8 +712,12 @@ public:
       if (win-> key == 'F')
         please_leave = 1;
       if (win-> keysym == 0xff52) // up
-        U += 0.1;
+        U += 1.0;
       if (win-> keysym == 0xff54) // down
+        U -= 1.0;
+      if (win-> keysym == 0xff55) // prior (fn-up)
+        U += 0.1;
+      if (win-> keysym == 0xff56) // next (fn-down)
         U -= 0.1;
       if (win-> mouse == 1) {
         normalJunctionNumber = int(win-> xc(win-> mouse_x));

@@ -827,6 +827,8 @@ void VortexWin::ProcessEvents()
   ymax = yma;
   xscale = 1/(xmax-xmin);
   yscale = 1/(ymax-ymin);
+  xmargin = -xmin;
+  ymargin = -ymin;
 }
 
 void VortexWin::setview(double L) {
