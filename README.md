@@ -8,8 +8,6 @@ The following programs and packages are needed to run this code. Make sure to ha
 
 - `xmgr` - Program for plotting. Note that the new version, xmgrace, is not compatible with this reository. Instructrions for how to install are found [here](INSTALL_XMGR.md).
 
-- implement oscilloscope trigger on voltage with printout using circular buffer.
-
 ## Get started
 
     mkdir snspd
