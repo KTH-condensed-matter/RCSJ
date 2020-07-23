@@ -344,10 +344,15 @@ public:
 
 #else
 
-  void init_voltages() {	// Initialize voltages to a linear profile.
-    if (U < Rterm*Ic) {
-      for (int x = 0; x < Lx; x++)
+  void init_voltages() {	// Initialize voltages and phases to a reasonable state.
+    if (U < Rterm*Ic) {   // Array is superconducting. V(x) = 0.
+      angle dtheta = asin(U/(Rterm*Ic));
+      theta(Lx-1) = 0.0;
+      V(Lx-1) = 0;
+      for (int x  = Lx-2; x >= 0; x--) {
         V(x) = 0;
+        theta(x) = theta(x+1) + dtheta;
+      }
     }
     else { // Might need some thinking...
       double I = U/(Rterm + Rshunt);      
@@ -661,7 +666,7 @@ public:
 
     double size = 0.5;
 
-    win-> setview(0,-2,Lx,100);
+    win-> setview(0,-2,Lx,Lx);
 
 #if 0
     for (int x = 0; x < Lx; x++) { // Plot the XY spin:
