@@ -156,6 +156,7 @@ public:
   double U;			// Applied voltage.
   double C, C0, Cterm;		// Junction capacitance, and capacitance to ground.
   double R, Rterm;		// Junction resistance and terminal resistance.
+  double Rqp;         // Quasiparticle resistance if > 0, otherwise oo.
   double Rshunt;      // Shunt resistance (for now between first and last SC island).
   double Vgap;			// Gap voltage (or 0).
   double Vac, omega;		// Applied frequence dependent voltage.
@@ -224,6 +225,7 @@ public:
     C = 0.1;
     C0 = C/100;
     R = 1;
+    Rqp = 0;        // 0 means oo.
     Rterm = R/100;	// 50 Ohms instead?
     Rshunt = 0;     // 0 means not present.
     Cterm = 0;			// 0 means same as C0.
@@ -426,6 +428,10 @@ public:
 	        IR = (V(x) - V(x+1))/R; // Current through resistor shunt.
 	        In = sqrt(2*T/R/step)*rnd.normal();
 	      }
+        else if (Rqp > 0) {
+	        IR = (V(x) - V(x+1))/Rqp; // Quasiparticle current through resistor shunt.
+	        In = sqrt(2*T/Rqp/step)*rnd.normal();
+        }
       	Is(x+1) = Ic_array(x)*sin( theta(x) - theta(x+1) ) + IR + In;
 
       }
@@ -446,6 +452,10 @@ public:
         if (abs(V(x) - V(x+1)) >= vgap) {
           IR = (V(x) - V(x+1))/R; // Current through resistor shunt.
           In = sqrt(2*T/R/step)*rnd.normal();
+        }
+        else if (Rqp > 0) {
+	        IR = (V(x) - V(x+1))/Rqp; // Quasiparticle current through resistor shunt.
+	        In = sqrt(2*T/Rqp/step)*rnd.normal();
         }
         Is(x+1) = Ic_array(x)*(vgap/Vgap)*sin( theta(x) - theta(x+1) ) + IR + In;
 
@@ -485,6 +495,8 @@ public:
               M = C = C_array[x];
             if (abs(V(x) - V(x + 1)) >= Vgap)
               M = C + dt / 2 / R; // (Symmetric)
+            else if (Rqp > 0)
+              M = C + dt / 2 / Rqp;
             D[x] += M;
             U[x] = -M;
           }
@@ -496,6 +508,8 @@ public:
               M = C = C_array[x - 1];
             if (abs(V(x - 1) - V(x)) >= Vgap)
               M = C + dt / 2 / R; // (Symmetric)
+            else if (Rqp > 0)
+              M = C + dt / 2 / Rqp;
             D[x] += M;
             L[x - 1] = -M;
           }
@@ -511,6 +525,7 @@ public:
           double dV = abs(V(x) - V(x + 1));
           if (dV >= vgap && dV < Vgap) {
             double M = dt / 2 / R;
+            if (Rqp > 0) M -= dt / 2 / Rqp;
             D[x]   += 2*M;
             U[x]   -= M;
             L[x-1] -= M;
@@ -839,6 +854,7 @@ bool System :: setparam(istream& in) {
   else if (name == "C") in >> C;
   else if (name == "C0") in >> C0;
   else if (name == "R") in >> R;
+  else if (name == "Rqp") in >> Rqp;
   else if (name == "Rterm") in >> Rterm;
   else if (name == "Rshunt") in >> Rshunt;
   else if (name == "Cterm") in >> Cterm;

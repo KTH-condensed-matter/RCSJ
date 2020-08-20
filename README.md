@@ -98,6 +98,7 @@ Right terminal: Direct connection to ground, $V_N = \theta_N = 0$.
 
 - $I_c$   - Critical current
 - $R$    - Shunt resistance. Nonlinear, only if $|V_{x} - V_{x+1}| > V_g$.
+- $R_{qp}$ - Quasiparticle resistance if > 0.
 - $V_{\text{gap}}$ - Gap voltage $V_g = 2\Delta / e$.
 - $C$    - Shunt capacitance
 - $C_0$  - Capacitance to ground.
@@ -171,6 +172,7 @@ In dimensionless units we can therefore set
 
     : Ic = 1
     : R  = 1
+    : Rqp = ?
     : C  = Q^2
     : C0 = Q^2 / lambda^2
     : Rterm = Rterm / R
