@@ -29,8 +29,7 @@ echo "Starting on `hostname` at `date`" >> log
 # : f = 0.05 # 0.05 is equal to 8 Ghz (in units of 160 GHz)
 
 # Photon:  junction 0.04 0.6 10  (dimensionless time unit = ca 20 ps)
-# : photon = 25 1 4 0.001
-# : photon = 25 0.05 0.5 0.001 # approximately 1 ps, 10 ps, 20 ns.
+# : photon = 25 0.05 0.5 1000 # approximately 1 ps, 10 ps, 20 ns.
 
 # Run simulation
 

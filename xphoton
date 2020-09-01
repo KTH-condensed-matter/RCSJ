@@ -20,17 +20,16 @@ X # Visualization
 #: dt = 0.02 # Time step. Default is 0.02.
 
 # Photon:  junction gapSupressionTime gapRecoveryTime Freq (dimensionless time unit = ca 20 ps?)
-# : photon = 25 1 4 0.001
-# : photon = 25 0.05 0.5 0.001 # approximately 1 ps, 10 ps, 20 ns.
+# : photon = 25 0.05 0.5 1000 # approximately 1 ps, 10 ps, 20 ns.
 
 # Run simulation
 
 # Note bias current approximately Ib = U/R = U / 200 in the superconducting state.
 # Total sum gap voltage is Lx * Vg = 100 * 1 = 100
 
-# : photon = 25 0.2 1 0.001 #
-# : photon = 25 0.1 0.5 0.001 # approximately 2 ps, 10 ps, 20 ns.
-# : photon = 25 0.2 1 0.0001 # approximately 4 ps, 20 ps, 200 ns.
+# : photon = 25 0.2 1 1000 #
+# : photon = 25 0.1 0.5 1000 # approximately 2 ps, 10 ps, 20 ns.
+# : photon = 25 0.2 1 10000 # approximately 4 ps, 20 ps, 200 ns.
 
 #   Lx      number  sweeps  equil   Umin    Ustep   Umax
 
@@ -38,7 +37,7 @@ X # Visualization
 u   101     1000000  10      10000     160       10      160
 
 # Add photons:
-: photon = 25 0.2 1 0.0001 # approximately 4 ps, 20 ps, 200 ns.
+: photon = 25 0.2 1 10000 # approximately 4 ps, 20 ps, 200 ns.
 
 u   101     1000000  10      1     160       10      160
 

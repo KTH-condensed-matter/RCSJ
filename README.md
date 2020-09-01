@@ -17,9 +17,9 @@ The following programs and packages are needed to run this code. Make sure to ha
     cd src
     make
     make install
-
+    
     cd run
-
+    
     nice ./xiv &
 
 or
@@ -317,4 +317,5 @@ where $\delta t$ is the time since the photon reached the detector.
 
 In the input file this is set using
 
-    : photon x tau_supr tau_recov photon_frequency.
+    : photon x tau_supr tau_recov photon_time_interval
+

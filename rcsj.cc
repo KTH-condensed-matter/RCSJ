@@ -164,7 +164,7 @@ public:
   int normalJunctionNumber;	// Junction which goes normal when a photon hits.
   double gapSupressionTime;	// Time scale for gap supression.
   double gapRecoveryTime;	// Time scale for gap recovery.
-  double photonArrivalFreq;	// Frequency of photon arrivals.
+  double photonArrivalTimeInterval;	// Time interval between photon arrivals.
   double photonArrivalTime;	// Time of next photon arrival.
   
   double Energy;		// Current energy (not used).
@@ -240,7 +240,7 @@ public:
     normalJunctionNumber = Lx/2;
     gapSupressionTime = 0.0;
     gapRecoveryTime = 4.0; // XXX Units?
-    photonArrivalFreq = 0;
+    photonArrivalTimeInterval = 0;
     photonArrivalTime = -100000.0;
   }
 
@@ -308,7 +308,7 @@ public:
     cmd >> normalJunctionNumber
 	>> gapSupressionTime
 	>> gapRecoveryTime
-	>> photonArrivalFreq;
+	>> photonArrivalTimeInterval;
     photonArrivalTime = -100000.0;
     return !!cmd;
   }
@@ -405,9 +405,9 @@ public:
 
     for (int iii = 0; iii < ant; iii++) {
 
-      if (photonArrivalFreq > 0 &&
-          photonArrivalTime + 0.5/photonArrivalFreq < time*step)
-        photonArrivalTime = time*step + 0.5/photonArrivalFreq;
+      if (photonArrivalTimeInterval > 0 &&
+          photonArrivalTime + 0.5*photonArrivalTimeInterval < time*step)
+        photonArrivalTime = time*step + 0.5*photonArrivalTimeInterval;
 
       // Voltage bias: Delta is twisted with time!
 
@@ -437,7 +437,7 @@ public:
       }
 
       double vgap = Vgap;
-      if (photonArrivalFreq > 0 && photonArrivalTime <= time*step) {
+      if (photonArrivalTimeInterval > 0 && photonArrivalTime <= time*step) {
         int x = normalJunctionNumber;
         if (time*step < photonArrivalTime + gapSupressionTime) {
           double delta = time*step - photonArrivalTime;
@@ -520,7 +520,7 @@ public:
 #endif
 
         // Handle photons here also.
-        if (photonArrivalFreq > 0 && vgap < Vgap) {
+        if (photonArrivalTimeInterval > 0 && vgap < Vgap) {
           int x = normalJunctionNumber;
           double dV = abs(V(x) - V(x + 1));
           if (dV >= vgap && dV < Vgap) {
@@ -742,7 +742,7 @@ public:
       if (win-> mouse == 1) {
         normalJunctionNumber = int(win-> xc(win-> mouse_x));
         photonArrivalTime = time*step;
-        photonArrivalFreq = 1e-12;  // Needs to be nonzero...
+        photonArrivalTimeInterval = 1e12;  // Needs to be nonzero...
         clog << "=> Photon at x = " << normalJunctionNumber << ", time = " << photonArrivalTime << endl;
       }
       if (win-> mouse == 4)
