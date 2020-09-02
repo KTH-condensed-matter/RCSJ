@@ -41,6 +41,9 @@ static char usage[] =
   " #	...			-- Comment.\n"
   " !	...			-- Execute a shell command.\n"
   " H				-- Help.\n"
+  " : param = ?			-- Set parameter.\n"
+  " u Lx number sweeps equil Umin Ustep Umax		-- Run voltage sweep.\n"
+  " r Lx number sweeps equil Tmin Tstep Tmax		-- Run temperature sweep.\n"
   " + lots of undocumented stuff\n"
   " Q				-- quit.\n";
 
