@@ -59,7 +59,7 @@ I_R =
 \\
 \left<I_n\right> = 0,
 \quad
-\left<I_n(t)I_n(t')\right> = \frac {2 k_B T} R \delta(t'-t').
+\left<I_n(t)I_n(t')\right> = \frac {2 k_B T} R \delta(t-t').
 $$
 
 and similarly for $I^{qp}_n$.  Here the quasiparticle resistance $R_{qp} \approx R e^{2\Delta/k_B T} \gg R.$
@@ -89,7 +89,7 @@ I_0 = (U - V_1)/R_\text{term} + I_n - I_\text{shunt},
 \qquad
 \left<I_n\right> = 0,
 \quad
-\left<I_n(t)I_n(t')\right> = \frac {2 k_B T} {R_\text{term}} \delta(t'-t')
+\left<I_n(t)I_n(t')\right> = \frac {2 k_B T} {R_\text{term}} \delta(t-t')
 $$
 where $I_\text{shunt} = V_1/R_\text{shunt} + I_{n,\text{shunt}}$.
 
@@ -155,7 +155,7 @@ i_R =
 \\
 \left<i_n\right> = 0,
 \quad
-\left<i_n(t)i_n(t')\right> = \frac {2 k_B T} {RI_c^2} \frac{R}{L_K}\delta(t'-t') = \frac {2 k_B T} {L_K I_c^2}\delta(t'-t') = \frac {2 k_B T} {E_J} \delta(t'-t').
+\left<i_n(t)i_n(t')\right> = \frac {2 k_B T} {RI_c^2} \frac{R}{L_K}\delta(t-t') = \frac {2 k_B T} {L_K I_c^2}\delta(t-t') = \frac {2 k_B T} {E_J} \delta(t-t').
 $$
 where $E_J = L_K I_c^2 = \hbar I_c/2e = (\Delta/2) (R_Q/ R)$ is the Josephson energy,
 and $R_Q = h/(2e)^2 \approx 6.45 \, k\Omega$ the resistance quantum.
