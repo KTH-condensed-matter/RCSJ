@@ -320,5 +320,5 @@ where $\delta t$ is the time since the photon reached the detector.
 
 In the input file this is set using
 
-    : photon x tau_supr tau_recov photon_time_interval
+    : photon = x tau_supr tau_recov photon_time_interval
 
