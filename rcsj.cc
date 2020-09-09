@@ -518,7 +518,6 @@ public:
           }
         }
         D[0] += dt / 2 / Rterm;     // First junction connected via Rterm to voltage source.
-        if (Rshunt > 0) D[0] += dt / 2 / Rshunt;     // and to ground vi Rshunt.
 #ifdef END_RESISTOR
         D[N - 1] += dt / 2 / Rterm; // Last junction terminated by Rterm to ground.
 #endif
@@ -565,7 +564,7 @@ public:
 
         // Solve the equation system using tridiagonal LU solver:
         tri_solve(L, D, U, N, &new_theta[0]);
-        // new_theta now contains the solution -dV/dt.
+        // new_theta now contains the solution.
       }
 
 #ifdef FIND_PHASE_SLIPS
