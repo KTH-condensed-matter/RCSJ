@@ -147,6 +147,9 @@ public:
   Table<angle> theta;		// Phases theta_r.
   Table<angle> new_theta;
 
+  double VL = 0;          // Voltage at the first node before bias tee.
+  angle thetaL = 0;       // Phase at the first node before bias tee.
+
   Table<double> Is;		// Supercurrents (temporary)
 
   Table<double> Ic_array;	// Critical currents array of length Lx-1.
@@ -161,6 +164,8 @@ public:
   double R, Rterm;		// Junction resistance and terminal resistance.
   double Rqp;         // Quasiparticle resistance if > 0, otherwise oo.
   double Rshunt;      // Shunt resistance (for now between first and last SC island).
+  double BiasTeeL;    // Incuctance in bias tee. (The capacitance is Cterm.)
+  double Ramp;        // Amplifier impedance. 50 Ohm in reduced units?
   double Vgap;			// Gap voltage (or 0).
   double Vac, omega;		// Applied frequence dependent voltage.
 
@@ -232,6 +237,8 @@ public:
     Rterm = R/100;	// 50 Ohms instead?
     Rshunt = 0;     // 0 means not present.
     Cterm = 0;			// 0 means same as C0.
+    BiasTeeL = 1.0;
+    Ramp = 0.0001;
     Vgap = 0;
     Ic = 1.0;
     Icweak = 0;			// 0 means 0.1*Ic.
@@ -418,11 +425,13 @@ public:
 
       double Ut = U + Vac*sin(omega*time*step); // Applied voltage, possibly time dependent.
 
-      Is(0) = (Ut - V[0])/Rterm + sqrt(2*T/Rterm/step)*rnd.normal(); // Current through left lead.
+      // VL is the voltage at the node between the input resistors and the bias tee inductor.
+
+      Is(0) = (Ut - VL)/Rterm + sqrt(2*T/Rterm/step)*rnd.normal(); // Current through left lead.
   
       // Maybe add a shunt to ground here:
       if (Rshunt > 0)
-        Is(0) -= (V[0] - 0.0)/Rshunt + sqrt(2*T/Rshunt/step)*rnd.normal(); // Current through left lead.
+        Is(0) -= (VL - 0.0)/Rshunt + sqrt(2*T/Rshunt/step)*rnd.normal(); // Current through left lead.
 
       for (int x = 0; x < Lx-1; x++) { // Step through the Lx-1 junctions.
 	
@@ -517,7 +526,8 @@ public:
             L[x - 1] = -M;
           }
         }
-        D[0] += dt / 2 / Rterm;     // First junction connected via Rterm to voltage source.
+        // In the bias tee configuration this must be disabled:
+        // D[0] += dt / 2 / Rterm;     // First junction connected via Rterm to voltage source.
 #ifdef END_RESISTOR
         D[N - 1] += dt / 2 / Rterm; // Last junction terminated by Rterm to ground.
 #endif
@@ -535,9 +545,10 @@ public:
           }
         }
 
-        if (Rshunt > 0) {
-          D[0] += dt / 2 / Rshunt;     // First junction connected to ground.
-        }
+        // In the bias tee configuration the following two lines must be disabled.
+        // if (Rshunt > 0) {
+        //   D[0] += dt / 2 / Rshunt;     // First junction connected to ground.
+        // }
 
         // Terminal capacitance:
         if (Cterm > 0)
@@ -567,6 +578,16 @@ public:
         // new_theta now contains the solution.
       }
 
+      // Bias tee - Inductance:
+      double Gin = 1.0/Rterm + 1.0/Rshunt;
+      VL = VL + ( Is(0) - (thetaL - theta(0))/BiasTeeL )/Gin;
+      thetaL = thetaL + step*VL;
+
+      // Bias tee - Capacitance:
+      // The capacitance is Cterm, already accounted for.
+      // Just add voltage over series resistor to ground:
+      V[0] += Ramp * (Is(0) - Is(1)) + sqrt(2*T*Ramp/step)*rnd.normal(); // Voltage over amplifier.
+
 #ifdef FIND_PHASE_SLIPS
       // Leap-frog: This version tries to identify phase slips. But only in bulk.
       for (int i = 0; i < 1; i++) {
@@ -593,6 +614,8 @@ public:
         new_theta[i] = theta[i] + V[i] * step;
       }
 #endif
+      // VL = V[0]; // Disable bias tee inductor. XXX
+
       // The current going into the array from the left, i.e., at the
       // point where the voltage is applied:
       Jtot += (U - V[0]) / Rterm * step; // No need to include the noise since it averages to zero.
@@ -863,6 +886,7 @@ bool System :: setparam(istream& in) {
   else if (name == "Cterm") in >> Cterm;
   else if (name == "Ic") { in >> Ic; set_Ic(); }
   else if (name == "Icweak") { in >> Icweak; set_Ic(); }
+  else if (name == "BiasTee") in >> BiasTeeL >> Cterm >> Ramp;
 
   else if (name == "Vgap") in >> Vgap;
   else if (name == "circuit_layout") { circuit_layout = read_layout(in); set_Ic(); }

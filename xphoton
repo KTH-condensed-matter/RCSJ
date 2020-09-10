@@ -9,17 +9,28 @@ X # Visualization
 : C = 1.2337    # Q^2 factor = beta in dimenstionless units.
 : C0 = 0.01     # Q^2 / lambda^2.  velocity is lambda/Q = 10 junctions/time unit
 : R = 1
+: Rqp = 1000
 : Rterm = 200
-: Rshunt = 50
-#: Cterm = 0    # 0 means Cterm=C0.
-: Cterm = 10    # What is a good number?
-: T = 0.0004545 # in units of EJ = L Ic^2 = (Delta/2)(R_Q/R) = 0.88 Tc * (R_Q/R).
+: Rshunt = 0.125
+# : Rshunt = 0.05
+: Cterm = 0    # 0 means Cterm=C0.
+# : Cterm = 4000    # What is a good number?
+: Cterm = 2000    # What is a good number?
+: BiasTee = 0.05 100 0.00000001     # L C Ramp
+# : T = 0.00004545 # in units of EJ = L Ic^2 = (Delta/2)(R_Q/R) = 0.88 Tc * (R_Q/R).
+# : T = 0.04545 # in units of EJ = L Ic^2 = (Delta/2)(R_Q/R) = 0.88 Tc * (R_Q/R).
+: T = 0.005 # in units of EJ = L Ic^2 = (Delta/2)(R_Q/R) = 0.88 Tc * (R_Q/R).
 : Vgap = 1      # Gap voltage. Put equal 0 if you want ohmic behavior.
 : circuit_layout = ordinary
-: init_voltages = false
+: init_voltages = true
 #: dt = 0.02 # Time step. Default is 0.02.
+: dt = 0.02
 
-# Photon:  junction gapSupressionTime gapRecoveryTime Freq (dimensionless time unit = ca 20 ps?)
+# : Vac = 1000 : f = 0.2
+
+: trigger_level = 0.04
+
+# Photon:  junction gapSupressionTime gapRecoveryTime TimeInterval (dimensionless time unit = ca 20 ps?)
 # : photon = 25 0.05 0.5 1000 # approximately 1 ps, 10 ps, 20 ns.
 
 # Run simulation
@@ -27,19 +38,13 @@ X # Visualization
 # Note bias current approximately Ib = U/R = U / 200 in the superconducting state.
 # Total sum gap voltage is Lx * Vg = 100 * 1 = 100
 
-# : photon = 25 0.2 1 1000 #
-# : photon = 25 0.1 0.5 1000 # approximately 2 ps, 10 ps, 20 ns.
-# : photon = 25 0.2 1 10000 # approximately 4 ps, 20 ps, 200 ns.
+: photon = 25 0.2 1 1e12 # approximately 4 ps, 20 ps, 200 ns.
 
 #   Lx      number  sweeps  equil   Umin    Ustep   Umax
 
 # First equilibrate for some time without photons:
-u   101     1000000  10      10000     160       10      160
-
-# Add photons:
-: photon = 25 0.2 1 10000 # approximately 4 ps, 20 ps, 200 ns.
-
-u   101     1000000  10      1     160       10      160
+u   401     100000  10      10000     160       10      160
+u   401     1000000000  10      1     160       10      160
 
 Q
 

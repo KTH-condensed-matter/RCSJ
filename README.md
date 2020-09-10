@@ -2,6 +2,14 @@
 
 Simulation of Resistively and Capacitively Shunted Josephson junction array.
 
+### Bias Tee version
+
+Specify bias tee parameters L, C, Ramp as
+
+    : BiasTee = L C Ramp
+
+See figure below.
+
 ## Requirements
 
 The following programs and packages are needed to run this code. Make sure to have them installed before attempting to run the code
@@ -40,7 +48,7 @@ Or for photon detection:
 
 ### Josephson junction array
 
-![circuit](./circuit.jpg)
+![biasteecircuit](./bias-tee-circuit.jpg)
 
 Total current through a junction between $x$ and $x+1$
 
