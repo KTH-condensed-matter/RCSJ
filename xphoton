@@ -12,11 +12,9 @@ X # Visualization
 : Rqp = 1000
 : Rterm = 200
 : Rshunt = 0.125
-# : Rshunt = 0.05
-: Cterm = 0    # 0 means Cterm=C0.
-# : Cterm = 4000    # What is a good number?
-: Cterm = 2000    # What is a good number?
-: BiasTee = 0.05 100 0.00000001     # L C Ramp
+# : Cterm = 0    # 0 means Cterm=C0.
+# : Cterm = 2000    # What is a good number?
+: BiasTee = 1000 10 0.125     # L C Ramp
 # : T = 0.00004545 # in units of EJ = L Ic^2 = (Delta/2)(R_Q/R) = 0.88 Tc * (R_Q/R).
 # : T = 0.04545 # in units of EJ = L Ic^2 = (Delta/2)(R_Q/R) = 0.88 Tc * (R_Q/R).
 : T = 0.005 # in units of EJ = L Ic^2 = (Delta/2)(R_Q/R) = 0.88 Tc * (R_Q/R).

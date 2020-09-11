@@ -149,6 +149,7 @@ public:
 
   double VL = 0;          // Voltage at the first node before bias tee.
   angle thetaL = 0;       // Phase at the first node before bias tee.
+  double VA = 0;          // Voltage at the amplifier.
 
   Table<double> Is;		// Supercurrents (temporary)
 
@@ -586,7 +587,9 @@ public:
       // Bias tee - Capacitance:
       // The capacitance is Cterm, already accounted for.
       // Just add voltage over series resistor to ground:
-      V[0] += Ramp * (Is(0) - Is(1)) + sqrt(2*T*Ramp/step)*rnd.normal(); // Voltage over amplifier.
+      V[0] -= VA;
+      VA = Ramp * (Is(0) - Is(1)) + sqrt(2*T*Ramp/step)*rnd.normal(); // Voltage over amplifier.
+      V[0] += VA;
 
 #ifdef FIND_PHASE_SLIPS
       // Leap-frog: This version tries to identify phase slips. But only in bulk.
