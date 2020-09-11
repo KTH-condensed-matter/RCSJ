@@ -9,17 +9,23 @@ X # Visualization
 : C = 1.2337    # Q^2 factor = beta in dimenstionless units.
 : C0 = 0.01     # Q^2 / lambda^2.  velocity is lambda/Q = 10 junctions/time unit
 : R = 1
+: Rqp = 1000
 : Rterm = 200
-: Rshunt = 50
-#: Cterm = 0    # 0 means Cterm=C0.
-: Cterm = 10    # What is a good number?
-: T = 0.0004545 # in units of EJ = L Ic^2 = (Delta/2)(R_Q/R) = 0.88 Tc * (R_Q/R).
+: Rshunt = 0.125
+# : Cterm = 0    # 0 means Cterm=C0.
+: Cterm = 2000    # What is a good number?
+: T = 0.0058 # in units of EJ = L Ic^2 = (Delta/2)(R_Q/R) = 0.88 Tc * (R_Q/R).
 : Vgap = 1      # Gap voltage. Put equal 0 if you want ohmic behavior.
 : circuit_layout = ordinary
-: init_voltages = false
+: init_voltages = true
 #: dt = 0.02 # Time step. Default is 0.02.
+: dt = 0.01 # 0.02 might be too much.
 
-# Photon:  junction gapSupressionTime gapRecoveryTime Freq (dimensionless time unit = ca 20 ps?)
+# : Vac = 1000 : f = 0.2
+
+: trigger_level = 0.015
+
+# Photon:  junction gapSupressionTime gapRecoveryTime TimeInterval (dimensionless time unit = ca 20 ps?)
 # : photon = 25 0.05 0.5 1000 # approximately 1 ps, 10 ps, 20 ns.
 
 # Run simulation
@@ -27,35 +33,15 @@ X # Visualization
 # Note bias current approximately Ib = U/R = U / 200 in the superconducting state.
 # Total sum gap voltage is Lx * Vg = 100 * 1 = 100
 
-# : photon = 25 0.2 1 1000 #
-# : photon = 25 0.1 0.5 1000 # approximately 2 ps, 10 ps, 20 ns.
-# : photon = 25 0.2 1 10000 # approximately 4 ps, 20 ps, 200 ns.
+: photon = 25 0.2 1 1e12 # approximately 4 ps, 20 ps, 200 ns.
 
 #   Lx      number  sweeps  equil   Umin    Ustep   Umax
 
 # First equilibrate for some time without photons:
-u   101     1000000  10      10000     160       10      160
-
-# Add photons:
-: photon = 25 0.2 1 10000 # approximately 4 ps, 20 ps, 200 ns.
-
-u   101     1000000  10      1     160       10      160
+u   401     100000  10      10000     160       10      160
+u   401     1000000000  10      1     160       10      160
 
 Q
-
-u   101     1000000  10      10000     100       10      200
-u   101     1000000  10      10000     200       10      300
-
-!mkdir up
-!mv PS_* up
-
-u   101     1000000  10      10000     300      -10       10
-
-# u   101     100000000  10      10000   150       50      200
-
-Quit
 EOF
 
 echo "Stopping on `hostname` at `date`" >> log
-
-
