@@ -607,7 +607,7 @@ public:
         int n = lrint(dtheta / twopi);
         dtheta = new_theta[i] - new_theta[i - 1];
         if (n != lrint(dtheta / twopi))
-          phout << time _ i << endl;
+          phout << time*step _ i << endl;
       }
       for (int i = Lx; i < Lx; i++) { // Never...
         V[i] += -new_theta[i] * step;
@@ -742,6 +742,9 @@ public:
     for (int i = 0; i < VN-1; i++)
       win-> line(i*1.0*Lx/VN, Vbuffer[(i + Vbuff_index) % mask]*Vscale,(i+1.0)*Lx/VN, Vbuffer[(i + 1 + Vbuff_index) % mask]*Vscale, win-> gcgreen);
 
+    static double ii = 0.0;
+    ii += 0.001*(Is(0)/Ic-ii);
+
     if (win->info) {
       char s[200];
       sprintf(s,
@@ -749,12 +752,14 @@ public:
 	      "Lx = %d\n"
 	      "time: %d\n"
 	      "step: %g\n"
-	      "C: %g\n",
+	      "C: %g\n"
+        "I/Ic: %g\n",
 	      T, U,
 	      Lx,
 	      time, step,
-	      C);
-      win->Info(5,s);
+	      C,
+        ii);
+      win->Info(6,s);
     }
 
     win -> Draw();
