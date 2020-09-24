@@ -165,7 +165,7 @@ public:
   double R, Rterm;		// Junction resistance and terminal resistance.
   double Rqp;         // Quasiparticle resistance if > 0, otherwise oo.
   double Rshunt;      // Shunt resistance (for now between first and last SC island).
-  double BiasTeeL;    // Incuctance in bias tee. (The capacitance is Cterm.)
+  double Lterm;       // Incuctance in bias tee. (The capacitance is Cterm.)
   double Ramp;        // Amplifier impedance. 50 Ohm in reduced units?
   double Vgap;			// Gap voltage (or 0).
   double Vac, omega;		// Applied frequence dependent voltage.
@@ -238,8 +238,8 @@ public:
     Rterm = R/100;	// 50 Ohms instead?
     Rshunt = 0;     // 0 means not present.
     Cterm = 0;			// 0 means same as C0.
-    BiasTeeL = 1.0;
-    Ramp = 0.0001;
+    Lterm = 0;
+    Ramp = 0;
     Vgap = 0;
     Ic = 1.0;
     Icweak = 0;			// 0 means 0.1*Ic.
@@ -528,7 +528,8 @@ public:
           }
         }
         // In the bias tee configuration this must be disabled:
-        // D[0] += dt / 2 / Rterm;     // First junction connected via Rterm to voltage source.
+        if (Lterm > 0)
+          D[0] += dt / 2 / Rterm;     // First junction connected via Rterm to voltage source.
 #ifdef END_RESISTOR
         D[N - 1] += dt / 2 / Rterm; // Last junction terminated by Rterm to ground.
 #endif
@@ -547,9 +548,9 @@ public:
         }
 
         // In the bias tee configuration the following two lines must be disabled.
-        // if (Rshunt > 0) {
-        //   D[0] += dt / 2 / Rshunt;     // First junction connected to ground.
-        // }
+        if (Lterm > 0 && Rshunt > 0) {
+          D[0] += dt / 2 / Rshunt;     // First junction connected to ground.
+        }
 
         // Terminal capacitance:
         if (Cterm > 0)
@@ -580,9 +581,11 @@ public:
       }
 
       // Bias tee - Inductance:
-      double Gin = 1.0/Rterm + 1.0/Rshunt;
-      VL = VL + ( Is(0) - (thetaL - theta(0))/BiasTeeL )/Gin;
-      thetaL = thetaL + step*VL;
+      if (Lterm > 0) {
+        double Gin = 1.0/Rterm + 1.0/Rshunt;
+        VL += ( Is(0) - (thetaL - theta(0))/Lterm )/Gin;
+        thetaL += step*VL;
+      }
 
       // Bias tee - Capacitance:
       // The capacitance is Cterm, already accounted for.
@@ -617,12 +620,13 @@ public:
         new_theta[i] = theta[i] + V[i] * step;
       }
 #endif
-      // VL = V[0]; // Disable bias tee inductor. XXX
+      if (Lterm == 0)
+        VL = V[0]; // Disable bias tee inductor.
 
       // The current going into the array from the left, i.e., at the
       // point where the voltage is applied:
-      Jtot += (U - V[0]) / Rterm * step; // No need to include the noise since it averages to zero.
-      Jshunt += V[0] / Rshunt * step; // No need to include the noise since it averages to zero.
+      Jtot += (U - VL) / Rterm * step; // No need to include the noise since it averages to zero.
+      Jshunt += VL / Rshunt * step; // No need to include the noise since it averages to zero.
 
       J += Is(1) * step; // Current through the first junction.
 
@@ -889,7 +893,8 @@ bool System :: setparam(istream& in) {
   else if (name == "Cterm") in >> Cterm;
   else if (name == "Ic") { in >> Ic; set_Ic(); }
   else if (name == "Icweak") { in >> Icweak; set_Ic(); }
-  else if (name == "BiasTee") in >> BiasTeeL >> Cterm >> Ramp;
+  else if (name == "Lterm") in >> Lterm;
+  else if (name == "Ramp") in >> Ramp;
 
   else if (name == "Vgap") in >> Vgap;
   else if (name == "circuit_layout") { circuit_layout = read_layout(in); set_Ic(); }

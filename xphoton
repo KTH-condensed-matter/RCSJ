@@ -13,10 +13,9 @@ X # Visualization
 : Rterm = 200
 : Rshunt = 0.125
 # : Cterm = 0    # 0 means Cterm=C0.
-# : Cterm = 2000    # What is a good number?
-: BiasTee = 10 2000 0.0000001  # 0.125     # L C Ramp
-# : T = 0.00004545 # in units of EJ = L Ic^2 = (Delta/2)(R_Q/R) = 0.88 Tc * (R_Q/R).
-# : T = 0.04545 # in units of EJ = L Ic^2 = (Delta/2)(R_Q/R) = 0.88 Tc * (R_Q/R).
+: Cterm = 2000    # What is a good number?
+: Lterm = 10        # Bias tee L
+: Ramp = 0.000125   # 50 Ohm seems too much???   # Ramp amplifier resistance 50 Ohm
 : T = 0.005 # in units of EJ = L Ic^2 = (Delta/2)(R_Q/R) = 0.88 Tc * (R_Q/R).
 : Vgap = 1      # Gap voltage. Put equal 0 if you want ohmic behavior.
 : circuit_layout = ordinary
