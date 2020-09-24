@@ -580,7 +580,7 @@ public:
         int n = lrint(dtheta / twopi);
         dtheta = new_theta[i] - new_theta[i - 1];
         if (n != lrint(dtheta / twopi))
-          phout << time _ i << endl;
+          phout << time*step _ i << endl;
       }
       for (int i = Lx; i < Lx; i++) { // Never...
         V[i] += -new_theta[i] * step;
