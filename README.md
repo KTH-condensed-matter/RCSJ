@@ -4,9 +4,11 @@ Simulation of Resistively and Capacitively Shunted Josephson junction array.
 
 ### Bias Tee version
 
-Specify bias tee parameters L, C, Ramp as
+Specify bias tee parameters $L_\text{term}$, $C_\text{term}$, $R_\text{amp}$ as
 
-    : BiasTee = L C Ramp
+    : Cterm = ?
+    : Lterm = ?
+    : Ramp  = ?
 
 See figure below.
 
