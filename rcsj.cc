@@ -167,6 +167,7 @@ public:
   double Rshunt;      // Shunt resistance (for now between first and last SC island).
   double Lterm;       // Incuctance in bias tee. (The capacitance is Cterm.)
   double Ramp;        // Amplifier impedance. 50 Ohm in reduced units?
+  double Camp;        // Capacator shunting Ramp to reduce noise.
   double Vgap;			// Gap voltage (or 0).
   double Vac, omega;		// Applied frequence dependent voltage.
 
@@ -240,6 +241,7 @@ public:
     Cterm = 0;			// 0 means same as C0.
     Lterm = 0;
     Ramp = 0;
+    Camp = 0;
     Vgap = 0;
     Ic = 1.0;
     Icweak = 0;			// 0 means 0.1*Ic.
@@ -591,7 +593,10 @@ public:
       // The capacitance is Cterm, already accounted for.
       // Just add voltage over series resistor to ground:
       V[0] -= VA;
-      VA = Ramp * (Is(0) - Is(1)) + sqrt(2*T*Ramp/step)*rnd.normal(); // Voltage over amplifier.
+      if (Camp == 0)
+        VA = Ramp * (Is(0) - Is(1)) + sqrt(2*T*Ramp/step)*rnd.normal(); // Voltage over amplifier.
+      else
+        VA += step/(Ramp * Camp + 0.5*step) * ( Ramp * (Is(0) - Is(1)) - VA + sqrt(2*T*Ramp/step)*rnd.normal() ); // Voltage over amplifier.
       V[0] += VA;
 
 #ifdef FIND_PHASE_SLIPS
@@ -900,6 +905,7 @@ bool System :: setparam(istream& in) {
   else if (name == "Icweak") { in >> Icweak; set_Ic(); }
   else if (name == "Lterm") in >> Lterm;
   else if (name == "Ramp") in >> Ramp;
+  else if (name == "Camp") in >> Camp;
 
   else if (name == "Vgap") in >> Vgap;
   else if (name == "circuit_layout") { circuit_layout = read_layout(in); set_Ic(); }
