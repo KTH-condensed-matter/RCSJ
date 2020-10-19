@@ -274,22 +274,28 @@ public:
       cmd >> stdev >> fname;
       // setup random Ic array.
       for (int x = 0; x < Lx-1; x++) {
-	Ic_array(x) = Ic + stdev*rnd.normal();
-	if (Ic_array(x) <= 0) cerr << "Warning: Ic <= 0." << endl;
+        Ic_array(x) = Ic + stdev*rnd.normal();
+        if (Ic_array(x) <= 0) cerr << "Warning: Ic <= 0." << endl;
       }
       // save random Ic array.
       ofstream out(fname.data());
       if (!out) { cerr << "Cannot open " << fname.data() << "!" << endl; exit(1); }
       for (int x = 0; x < Lx-1; x++) {
-	out << Ic_array[x] << endl;
+        out << Ic_array[x] << endl;
       }
+    }
+    else if (fname == "set") {
+      int x = 0;
+      double I = 0;
+      cmd >> x >> I;
+      Ic_array[x] = I;
     }
     else {
       // read Ic array.
       ifstream in(fname.data());
       if (!in) { cerr << "Cannot open " << fname.data() << "!" << endl; exit(1); }
       for (int x = 0; x < Lx-1; x++) {
-	in >> Ic_array[x];
+      	in >> Ic_array[x];
       }
     }
     return !!cmd;
