@@ -162,7 +162,7 @@ and $R_Q = h/(2e)^2 \approx 6.45 \, k\Omega$ the resistance quantum.
 
 Resistance is measured in units of $R$.
 
-The dimensionless quasiparticle resistance is $r_{qp} = R_{qp}/R \approx e^{2\Delta / k_B T} \approx e^{4 T_c/T}$.
+The dimensionless quasiparticle resistance is $r_{qp} = R_{qp}/R \approx \sqrt{k_B T/2\pi \Delta} e^{\Delta / k_B T} \approx \sqrt{T / 2\pi T_c} e^{2 T_c / T} \gg 1$.
 
 The dimensionless impedance is $Z_0 / R = \sqrt{L_K/R^2 C_0} = \lambda/Q$.
 
