@@ -6,67 +6,51 @@ echo "Starting on `hostname` at `date`" >> log
 X # Visualization
 
 : Ic = 1
-: C = 2       # Q^2 factor = beta in dimenstionless units.
-: C0 = 0.02     # Q^2 / lambda^2.
+: C = 1.2337    # Q^2 factor = beta in dimenstionless units.
+: C0 = 0.01     # Q^2 / lambda^2.  velocity is lambda/Q = 10 junctions/time unit
 : R = 1
-: Rterm = 1000
-: Rshunt = 50
-#: Cterm = 0    # 0 means Cterm=C0.
-: T = 0.0085   # in units of EJ
+: Rqp = 1000
+: Rterm = 200
+: Rshunt = 0.125
+# : Cterm = 0    # 0 means Cterm=C0.
+: Cterm = 2000   # What is a good number?
+#: Lterm = 10     # Bias tee L
+#: Ramp = 0.125   # 50 Ohm seems too much???   # Ramp amplifier resistance 50 Ohm
+#: Camp = 4000    # Low pass filter. I think 4000 ~ 1 pF.
+: T = 0.005 # in units of EJ = L Ic^2 = (Delta/2)(R_Q/R) = 0.88 Tc * (R_Q/R).
 : Vgap = 1      # Gap voltage. Put equal 0 if you want ohmic behavior.
 : circuit_layout = ordinary
 : init_voltages = false
-#: dt = 0.02 # Time step. Default is 0.02.
+: dt = 0.01 # Time step. Default is 0.02.
 # : dt = sqrt(LC)* 0.02 # May also be set automatically in this way.
-
-# To specify an AC drive use, for example,
-# : Vac = 0.1
-# : omega = 0.005 # or if you prefer frequency
-# : f = 0.05 # 0.05 is equal to 8 Ghz (in units of 160 GHz)
-
-# Photon:  junction 0.04 0.6 10  (dimensionless time unit = ca 20 ps)
-# : photon = 25 0.05 0.5 1000 # approximately 1 ps, 10 ps, 20 ns.
+: dt = 0.1
 
 # Run simulation
 
-# Note bias current approximately Ib = U/R = U / 1000 in the superconducting state.
-# Total sum gap voltage is Lx * Vg = 100 * 1 = 100
+# Note bias current approximately Ib = U/R = U / 200 in the superconducting state.
+# Total sum gap voltage is Lx * Vg = 400 * 1 = 400
 
 #   Lx      number  sweeps  equil   Umin    Ustep   Umax
 
-u   101     100000  10      10000   0       10      900
-u   101     100000  10      10000   900      5      950
-u   101     100000  10      10000   950     -5      900
-u   101     100000  10      10000   900      5      950
-u   101     100000  10      10000   950      1      990
-u   101     100000  10      10000   990   0.05      999
-u   101     100000  10      10000   999   0.05     1010
-u   101     100000  10      10000  1010    0.5     1050
-u   101     100000  10      10000  1050      1     1200
-u   101     100000  10      10000  1200     20     1500
+u   401     1000000  10      1000000     0     10      100
+u   401     1000000  10      1000000   100      5      150
+u   401     1000000  10      1000000   155      1      170
+u   401     1000000  10      1000000   171    0.5      200
+u   401     1000000  10      1000000   201      1      450
+u   401     1000000  10      1000000   455      5      500
+u   401     1000000  10      1000000   510     10     1000
+u   401     1000000  10      1000000  1100    100     2000
 
 !mkdir -p up
 !mv PS_* up
 
 # Reverse sweep:
 
-u   101     100000  10      10000  1500    -20     1200
-u   101     100000  10      10000  1200     -1      999
-u   101     100000  10      10000   999     -1      990
-u   101     100000  10      10000   990    -10      900
-u   101     100000  10      10000   900    -10      0
-
+u   401     1000000  10      1000000  1000   -100      400
+u   401     1000000  10      1000000   400    -10      190
+u   401     1000000  10      1000000   185     -5      100
+u   401     1000000  10      1000000    90    -10      0
 Q
-
-# u 100    100000	10      10000  0     0.1    50
-u   100    100000	10      10000  0     5    50
-u   100    100000	10      10000  50    -0.2    30
-u   100    100000	10      10000  30    0.2    80
-u   100    100000	10      10000  80    -0.2    30
-
-Quit
 EOF
 
 echo "Stopping on `hostname` at `date`" >> log
-
-
