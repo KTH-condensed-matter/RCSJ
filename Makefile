@@ -39,7 +39,7 @@ INSTALL=install
 
 IPATH	= -I/usr/X11/include
 LDLIBS	= -L/usr/X11R6/lib -lX11
-COMPFLAGS = -O3 -ffast-math -funroll-all-loops -fpeel-loops -ftracer -funswitch-loops -funit-at-a-time -pipe -mtune=native
+COMPFLAGS = -std=c++17 -O3 -ffast-math -funroll-all-loops -fpeel-loops -ftracer -funswitch-loops -funit-at-a-time -pipe -mtune=native
 CCFLAGS	= $(COMPFLAGS) $(IPATH)
 FFLAGS	= $(COMPFLAGS)
 CFLAGS	= $(COMPFLAGS)
@@ -53,6 +53,7 @@ CC	= gcc
 # IPATH   = -I/opt/X11/include 
 # LDLIBS  = -L/opt/X11/lib -lX11
 # COMPFLAGS = -Ofast -ffast-math -funroll-loops -funit-at-a-time -pipe -march=native -m64
+# COMPFLAGS = -std=c++17 -Ofast -ffast-math -funroll-loops -funit-at-a-time -pipe -march=native -m64
 # CCFLAGS = $(COMPFLAGS) $(IPATH)
 # FFLAGS  = $(COMPFLAGS)
 # CFLAGS  = $(COMPFLAGS)
