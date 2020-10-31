@@ -872,7 +872,7 @@ public:
       jshunt <<
       resistivity <<
       voltage <<
-      time << step << sweeps;
+      time << step << sweeps << flush;
   }
 
 };

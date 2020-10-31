@@ -128,9 +128,9 @@ public:
   // operator T*() { return v; } These are dangerous as they can appear as L-values.
   // operator void*() { return v; }
 
-  void set(const T x) { for (int i = 0; i < N; v[i++] = x); }
-  void set(const T x, int n) { for (int i = 0; i < n; v[i++] = x); }
-  T operator=(const T x) { for (int i = 0; i < N; v[i++] = x); return x; }
+  void set(const T x) { for (int i = 0; i < N; v[i++] = x) {} }
+  void set(const T x, int n) { for (int i = 0; i < n; v[i++] = x) {} }
+  T operator=(const T x) { for (int i = 0; i < N; v[i++] = x) {} return x; }
 
   int index(int x) { return x; }
   int index(int x, int y) { return x + L[0]*y; }
