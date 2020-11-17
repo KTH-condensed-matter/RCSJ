@@ -536,7 +536,7 @@ public:
           }
         }
         // In the bias tee configuration this must be disabled:
-        if (Lterm > 0)
+        if (Lterm == 0)
           D[0] += dt / 2 / Rterm;     // First junction connected via Rterm to voltage source.
 #ifdef END_RESISTOR
         D[N - 1] += dt / 2 / Rterm; // Last junction terminated by Rterm to ground.
@@ -556,7 +556,7 @@ public:
         }
 
         // In the bias tee configuration the following two lines must be disabled.
-        if (Lterm > 0 && Rshunt > 0) {
+        if (Lterm == 0 && Rshunt > 0) {
           D[0] += dt / 2 / Rshunt;     // First junction connected to ground.
         }
 
