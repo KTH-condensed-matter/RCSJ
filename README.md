@@ -58,6 +58,7 @@ Total current through a junction between $x$ and $x+1$
 $$
 I_x^\text{tot} = C (\dot{V}_{x} - \dot{V}_{x+1}) + I_c \sin(\theta_{x}-\theta_{x+1}) + I_R
 $$
+
 where $I_R$ is the quasiparticle tunneling current represented by a nonlinear resistance
 
 $$
@@ -68,14 +69,15 @@ I_R =
 (V_{x} - V_{x+1})/R_{qp} + I^{qp}_n , & \text{otherwise}
 \end{cases}
 \\
-\left<I_n\right> = 0,
+\left\langle I_n\right\rangle = 0,
 \quad
-\left<I_n(t)I_n(t')\right> = \frac {2 k_B T} R \delta(t-t').
+\left\langle I_n(t)I_n(t')\right\rangle = \frac {2 k_B T} R \delta(t-t').
 $$
 
 and similarly for $I^{qp}_n$.  Here the quasiparticle resistance $R_{qp} \approx R e^{2\Delta/k_B T} \gg R.$
 
 Josephson AC effect
+
 $$
 V_x = \frac{\hbar \dot \theta_x}{2e}
 $$
@@ -98,10 +100,11 @@ or with voltage bias $U$:
 $$
 I_0 = (U - V_1)/R_\text{term} + I_n - I_\text{shunt},
 \qquad
-\left<I_n\right> = 0,
+\left\langle I_n\right\rangle = 0,
 \quad
-\left<I_n(t)I_n(t')\right> = \frac {2 k_B T} {R_\text{term}} \delta(t-t')
+\left\langle I_n(t)I_n(t')\right\rangle = \frac {2 k_B T} {R_\text{term}} \delta(t-t')
 $$
+
 where $I_\text{shunt} = V_1/R_\text{shunt} + I_{n,\text{shunt}}$.
 
 Right terminal: Direct connection to ground, $V_N = \theta_N = 0$.
@@ -168,16 +171,17 @@ i_R =
 (v_{x} - v_{x+1})/r_{qp} + i^{qp}_n , & \text{otherwise}
 \end{cases}
 \\
-\left<i_n\right> = 0,
+\left\langle i_n\right\rangle = 0,
 \quad
-\left<i_n(t)i_n(t')\right> = \frac {2 k_B T} {RI_c^2} \frac{R}{L_K}\delta(t-t') = \frac {2 k_B T} {L_K I_c^2}\delta(t-t') = \frac {2 k_B T} {E_J} \delta(t-t').
+\left\langle i_n(t)i_n(t')\right\rangle = \frac {2 k_B T} {RI_c^2} \frac{R}{L_K}\delta(t-t') = \frac {2 k_B T} {L_K I_c^2}\delta(t-t') = \frac {2 k_B T} {E_J} \delta(t-t').
 $$
+
 where $E_J = L_K I_c^2 = \hbar I_c/2e = (\Delta/2) (R_Q/ R)$ is the Josephson energy,
 and $R_Q = h/(2e)^2 \approx 6.45 \, k\Omega$ the resistance quantum.
 
 Resistance is measured in units of $R$.
 
-The dimensionless quasiparticle resistance is $r_{qp} = R_{qp}/R \approx e^{2\Delta / k_B T} \approx e^{4 T_c/T}$.
+The dimensionless quasiparticle resistance is $r_{qp} = R_{qp}/R \approx \sqrt{k_B T/2\pi \Delta} e^{\Delta / k_B T} \approx \sqrt{T / 2\pi T_c} e^{2 T_c / T} \gg 1$.
 
 The dimensionless impedance is $Z_0 / R = \sqrt{L_K/R^2 C_0} = \lambda/Q$.
 
@@ -295,6 +299,7 @@ The quality factor is
 $$
 Q^2 = \frac{R'^2 C'}{L_K'} = \frac{R^2 C}{L_K} = \frac{\tau_{RC}}{\tau_{L/R}} = \frac{\pi^2}{8} \approx 1.2337
 $$
+
 (Note: The $Q$ is not really a quality factor since the resistance is nonlinear!)  
 Still its value is interesting: It is neither large nor small.
 
