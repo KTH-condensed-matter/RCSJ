@@ -47,6 +47,7 @@ Total current through a junction between $x$ and $x+1$
 $$
 I_x^\text{tot} = C (\dot{V}_{x} - \dot{V}_{x+1}) + I_c \sin(\theta_{x}-\theta_{x+1}) + I_R
 $$
+
 where $I_R$ is the quasiparticle tunneling current represented by a nonlinear resistance
 
 $$
@@ -65,6 +66,7 @@ $$
 and similarly for $I^{qp}_n$.  Here the quasiparticle resistance $R_{qp} \approx R e^{2\Delta/k_B T} \gg R.$
 
 Josephson AC effect
+
 $$
 V_x = \frac{\hbar \dot \theta_x}{2e}
 $$
@@ -91,6 +93,7 @@ I_0 = (U - V_1)/R_\text{term} + I_n - I_\text{shunt},
 \quad
 \left<I_n(t)I_n(t')\right> = \frac {2 k_B T} {R_\text{term}} \delta(t-t')
 $$
+
 where $I_\text{shunt} = V_1/R_\text{shunt} + I_{n,\text{shunt}}$.
 
 Right terminal: Direct connection to ground, $V_N = \theta_N = 0$.
@@ -157,6 +160,7 @@ i_R =
 \quad
 \left<i_n(t)i_n(t')\right> = \frac {2 k_B T} {RI_c^2} \frac{R}{L_K}\delta(t-t') = \frac {2 k_B T} {L_K I_c^2}\delta(t-t') = \frac {2 k_B T} {E_J} \delta(t-t').
 $$
+
 where $E_J = L_K I_c^2 = \hbar I_c/2e = (\Delta/2) (R_Q/ R)$ is the Josephson energy,
 and $R_Q = h/(2e)^2 \approx 6.45 \, k\Omega$ the resistance quantum.
 
@@ -280,6 +284,7 @@ The quality factor is
 $$
 Q^2 = \frac{R'^2 C'}{L_K'} = \frac{R^2 C}{L_K} = \frac{\tau_{RC}}{\tau_{L/R}} = \frac{\pi^2}{8} \approx 1.2337
 $$
+
 (Note: The $Q$ is not really a quality factor since the resistance is nonlinear!)  
 Still its value is interesting: It is neither large nor small.
 
