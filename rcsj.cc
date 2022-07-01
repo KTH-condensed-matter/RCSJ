@@ -170,7 +170,9 @@ public:
   double photonArrivalTimeInterval;	// Time interval between photon arrivals.
   double photonArrivalTime;	// Time of next photon arrival.
   
-  double Energy;		// Current energy (not used).
+  double Energy;		    // Current energy (not used).
+  Table<double> JQ;     // Heat current.
+  Table<double> JouleHeating;
 
   int time;			// Time (number of md steps).
   int number, equ;		// Number of sweeps and sweeps to equilibrate.
@@ -221,6 +223,11 @@ public:
     Energy = 0;
 
     init_voltages();
+
+    JQ.init(Lx+1);
+    JQ = 0.0;
+    JouleHeating.init(Lx+1);
+    JouleHeating = 0.0;
   }
 
   void set_defaults() {		// Default paramter values:
@@ -406,6 +413,7 @@ public:
 
   void rcsj(int ant = 1) {
 
+    Table<double> II(Lx+1); II = 0.0;
     for (int iii = 0; iii < ant; iii++) {
 
       if (photonArrivalTimeInterval > 0 &&
@@ -436,7 +444,7 @@ public:
 	        In = sqrt(2*T/Rqp/step)*rnd.normal();
         }
       	Is(x+1) = Ic_array(x)*sin( theta(x) - theta(x+1) ) + IR + In;
-
+        II(x+1) = IR + In;  // Save dissipative current here temporarily.
       }
 
       double vgap = Vgap;
@@ -461,6 +469,7 @@ public:
 	        In = sqrt(2*T/Rqp/step)*rnd.normal();
         }
         Is(x+1) = Ic_array(x)*(vgap/Vgap)*sin( theta(x) - theta(x+1) ) + IR + In;
+        II(x+1) = IR + In;  // Save dissipative current here temporarily.
 
         // Save Voltage at input, and the normal junction to file:
         save_voltage_vs_time(x);
@@ -601,6 +610,13 @@ public:
       J += Is(1) * step; // Current through the first junction.
 
       trigger_oscilloscope(V[0]);
+
+      // Heat dissipation:
+      for (int i = 0; i < Lx; i++) {
+        Vs = (new_theta[i] - old_theta[i] - new_theta[i+1] + old_theta[i+1])/(2*step);
+        JouleHeating[i] += II[x] * Vs * ((Vs/R) - In[x]);
+
+      }
 
       // Do the update:
       swap(theta.v, new_theta.v);
