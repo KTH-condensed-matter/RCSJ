@@ -58,9 +58,9 @@ I_R =
 (V_{x} - V_{x+1})/R_{qp} + I^{qp}_n , & \text{otherwise}
 \end{cases}
 \\
-\left\langleI_n\right\rangle = 0,
+\left\langle I_n\right\rangle = 0,
 \quad
-\left\langleI_n(t)I_n(t')\right\rangle = \frac {2 k_B T} R \delta(t-t').
+\left\langle I_n(t)I_n(t')\right\rangle = \frac {2 k_B T} R \delta(t-t').
 $$
 
 and similarly for $I^{qp}_n$.  Here the quasiparticle resistance $R_{qp} \approx R e^{2\Delta/k_B T} \gg R.$
@@ -89,9 +89,9 @@ or with voltage bias $U$:
 $$
 I_0 = (U - V_1)/R_\text{term} + I_n - I_\text{shunt},
 \qquad
-\left\langleI_n\right\rangle = 0,
+\left\langle I_n\right\rangle = 0,
 \quad
-\left\langleI_n(t)I_n(t')\right\rangle = \frac {2 k_B T} {R_\text{term}} \delta(t-t')
+\left\langle I_n(t)I_n(t')\right\rangle = \frac {2 k_B T} {R_\text{term}} \delta(t-t')
 $$
 
 where $I_\text{shunt} = V_1/R_\text{shunt} + I_{n,\text{shunt}}$.
@@ -156,9 +156,9 @@ i_R =
 (v_{x} - v_{x+1})/r_{qp} + i^{qp}_n , & \text{otherwise}
 \end{cases}
 \\
-\left\langlei_n\right\rangle = 0,
+\left\langle i_n\right\rangle = 0,
 \quad
-\left\langlei_n(t)i_n(t')\right\rangle = \frac {2 k_B T} {RI_c^2} \frac{R}{L_K}\delta(t-t') = \frac {2 k_B T} {L_K I_c^2}\delta(t-t') = \frac {2 k_B T} {E_J} \delta(t-t').
+\left\langle i_n(t)i_n(t')\right\rangle = \frac {2 k_B T} {RI_c^2} \frac{R}{L_K}\delta(t-t') = \frac {2 k_B T} {L_K I_c^2}\delta(t-t') = \frac {2 k_B T} {E_J} \delta(t-t').
 $$
 
 where $E_J = L_K I_c^2 = \hbar I_c/2e = (\Delta/2) (R_Q/ R)$ is the Josephson energy,
