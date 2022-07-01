@@ -4,9 +4,7 @@ Simulation of Resistively and Capacitively Shunted Josephson junction array.
 
 ## Requirements
 
-The following programs and packages are needed to run this code. Make sure to have them installed before attempting to run the code
-
-- `xmgr` - Program for plotting. Note that the new version, xmgrace, is not compatible with this reository. Instructrions for how to install are found [here](INSTALL_XMGR.md).
+For plotting the program `xmgr` is recommended. The new version, `xmgrace`, may also work. Instructrions for how to install are found [here](INSTALL_XMGR.md).
 
 ## Get started
 
