@@ -210,7 +210,7 @@ Assuming $T \lesssim 0.4 T_c$, we take $\Delta(T) \approx \Delta_0$ and $\tanh(\
 
 Discretize using a lattice constant $\approx \xi =$ the superconducting coherence length.
 
-Note that in the discrete model the kinetic inductance is $L_K(i) = \hbar / 2e \sqrt{I_c - I_b^2} = L_K(0) / \sqrt{1-i_b^2}$ is larger than $L_K \equiv L_K(0)$, especially close to the critical current.  For a continuous superconducting nanowire we similarly expect from GL that the supercurrent density obeys
+Note that in the discrete model the kinetic inductance is $L_K(i) = \hbar / 2e \sqrt{I_c^2 - I_b^2} = L_K(0) / \sqrt{1-i_b^2}$ is larger than $L_K \equiv L_K(0)$, especially close to the critical current.  For a continuous superconducting nanowire we similarly expect from GL that the supercurrent density obeys
 
 $$
 J_s = 2e n_s (1 - (v/v_0)^2) v
