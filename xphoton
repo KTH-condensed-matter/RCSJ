@@ -33,11 +33,10 @@ X # Visualization
 # Note bias current approximately Ib = U/R = U / 200 in the superconducting state.
 # Total sum gap voltage is Lx * Vg = 100 * 1 = 100
 
-: photon = 25 0.2 1 1e12 # approximately 4 ps, 20 ps, 200 ns.
+: photon = 25 0.2 1 1e4 # approximately 4 ps, 20 ps, 200 ns.
 
 #   Lx      number  sweeps  equil   Umin    Ustep   Umax
 
-# First equilibrate for some time without photons:
 u   401     100000  10      10000     160       10      160
 u   401     1000000000  10      1     160       10      160
 

@@ -50,18 +50,6 @@ public:
     n *= 2;
   }
 
-  void orearr() {
-    i = 0;
-    if (++j >= M) {
-      for (j = 0; j < M/2; j++)
-	mi[j] = mi[2*j]+mi[2*j+1];
-      for (j = M/2; j < M; j++)
-	mi[j] = 0;
-      n *= 2;
-      j = M/2;
-    }
-  }
-
   void jackknife() {		// Form Jackknife bins.
     if (jack) return;
     int N = n*j;		// Skipping the last i samples.
